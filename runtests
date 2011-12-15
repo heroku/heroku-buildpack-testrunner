@@ -1,0 +1,29 @@
+#!/bin/sh
+
+export BUILDPACK_TEST_RUNNER_HOME=`pwd`
+
+if [ 0 -eq $# ]; then
+  echo "Buildpack Test Runner"
+  echo "Usage: runtests buildpack1 [buildpack2 [...]]"
+  exit 1
+fi
+
+for bp in $@; do
+  if [ ! -d ${bp} ]; then
+    echo "${bp} is not a directory" >&2
+    continue
+  fi
+
+  if [ -z "`ls ${bp}/test/*_test.sh 2>/dev/null`" ]; then
+    echo "Buildpack '${bp}' does not contain valid tests. Must contain a 'test' directory and with files matching '*_test.sh'" >&2
+    continue
+  fi
+
+  echo "Running tests for buildpack: ${bp}"
+  export BUILDPACK_HOME=${bp}
+
+  for f in ${BUILDPACK_HOME}/test/*_test.sh; do
+    echo "Running test suite: ${f}"
+    ${SHUNIT_HOME?"'SHUNIT_HOME' environment variable must be set"}/src/shunit2 ${f}
+  done
+done
