@@ -4,11 +4,19 @@ export BUILDPACK_TEST_RUNNER_HOME=`pwd`
 
 if [ 0 -eq $# ]; then
   echo "Buildpack Test Runner"
-  echo "Usage: runtests buildpack1 [buildpack2 [...]]"
+  echo "Usage: runtests buildpack_1 [buildpack_2 [...]]"
+  echo "where 'buildpack_n can either be a local directory or a remote Git repository ending in .git"
   exit 1
 fi
 
 for bp in $@; do
+  echo "${bp}" | grep -q -e ".*\.git$"
+  if [ 0 -eq $? ]; then
+    tmp_repo="$(mktemp -d /tmp/heroku_buildpack_testrunner_tmp_repo.XXXX)"
+    git clone ${bp} ${tmp_repo}
+    bp=${tmp_repo}
+  fi
+    
   if [ ! -d ${bp} ]; then
     echo "${bp} is not a directory" >&2
     continue
@@ -26,4 +34,8 @@ for bp in $@; do
     echo "Running test suite: ${f}"
     ${SHUNIT_HOME?"'SHUNIT_HOME' environment variable must be set"}/src/shunit2 ${f}
   done
+
+  if [ -d ${tmp_repo} ]; then
+    rm -rf ${tmp_repo}
+  fi
 done
