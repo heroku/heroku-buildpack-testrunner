@@ -4,7 +4,7 @@ export BUILDPACK_TEST_RUNNER_HOME=`pwd`
 
 if [ 0 -eq $# ]; then
   echo "Buildpack Test Runner"
-  echo "Usage: runtests buildpack_1 [buildpack_2 [...]]"
+  echo "Usage: run buildpack_1 [buildpack_2 [...]]"
   echo "where 'buildpack_n can either be a local directory or a remote Git repository ending in .git"
   exit 1
 fi
