@@ -23,6 +23,12 @@ capture()
   rtrn=$?
 }
 
+resetCapture()
+{
+  rm ${STD_OUT}
+  rm ${STD_ERR}
+}
+
 assertContains()
 {
   needle=$1
@@ -32,5 +38,17 @@ assertContains()
   if [ 1 -eq $? ]
   then
     fail "Expected <${haystack}> to contain <${needle}>"
+  fi 
+}
+
+assertNotContains()
+{
+  needle=$1
+  haystack=$2
+
+  echo "${haystack}" | grep -q -F -e "${needle}"
+  if [ 0 -eq $? ]
+  then
+    fail "Did not expect <${haystack}> to contain <${needle}>"
   fi 
 }
