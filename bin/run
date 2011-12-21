@@ -34,7 +34,7 @@ for bp in $@; do
   for f in ${BUILDPACK_HOME}/test/*_test.sh; do
     echo "Running test suite: ${f}"
     ${SHUNIT_HOME?"'SHUNIT_HOME' environment variable must be set"}/src/shunit2 ${f}
-    exit_code=$(${exit_code} + $?)
+    exit_code=$(expr ${exit_code} + $?)
   done
 
   if [ -d ${tmp_repo} ]; then
