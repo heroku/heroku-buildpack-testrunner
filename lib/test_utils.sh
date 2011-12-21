@@ -53,7 +53,7 @@ assertNotContains()
   fi 
 }
 
-command_exists()
+commandExists()
 {
   command -v "$1" &>/dev/null
 }
@@ -63,9 +63,15 @@ assertFileMD5()
   expectedHash=$1
   filename=$2
 
-  if command_exists md5; then
-    assertEquals "MD5 (${filename}) = ${expectedHash}" "`md5 ${filename}`"
-  elif command_exists md5sum; then
-    assertEquals "${expectedHash}  ${filename}" "`md5sum ${filename}`"
+  if commandExists "md5"; then
+    md5_cmd="md5 ${filename}"
+    expected_md5_cmd_output="MD5 (${filename}) = ${expectedHash}"
+  elif commandExists "md5sum"; then
+    md5_cmd="md5sum ${filename}"
+    expected_md5_cmd_output="${expectedHash}  ${filename}"
+  else
+    fail "no suitable MD5 hashing command found on this system"
   fi
+
+  assertEquals "${expected_md5_cmd_output}" "`${md5_cmd}`"
 }
