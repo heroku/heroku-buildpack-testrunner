@@ -53,9 +53,8 @@ assertNotContains()
   fi 
 }
 
-commandExists()
-{
-  command -v "$1" &>/dev/null
+command_exists () {
+    type "$1" &> /dev/null ;
 }
 
 assertFileMD5()
@@ -63,10 +62,10 @@ assertFileMD5()
   expectedHash=$1
   filename=$2
 
-  if commandExists "md5sum"; then
+  if command_exists "md5sum"; then
     md5_cmd="md5sum ${filename}"
     expected_md5_cmd_output="${expectedHash}  ${filename}"
-  elif commandExists "md5"; then
+  elif command_exists "md5"; then
     md5_cmd="md5 ${filename}"
     expected_md5_cmd_output="MD5 (${filename}) = ${expectedHash}"
   else

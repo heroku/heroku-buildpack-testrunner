@@ -70,6 +70,7 @@ testMD5()
 testMD5_Failure()
 {
   touch ${OUTPUT_DIR}/salty
-  ( capture assertFileMD5 "INVALIID_MD5" "${OUTPUT_DIR}/salty" )
-  assertEquals "ASSERT:expected:<MD5 (${OUTPUT_DIR}/salty) = INVALIID_MD5> but was:<MD5 (${OUTPUT_DIR}/salty) = d41d8cd98f00b204e9800998ecf8427e>" "`cat ${STD_OUT}`"
+  ( capture assertFileMD5 "INVALID_MD5" "${OUTPUT_DIR}/salty" )
+  assertContains "d41d8cd98f00b204e9800998ecf8427e" "`cat ${STD_OUT}`"
+  assertContains "${OUTPUT_DIR}/salty" "`cat ${STD_OUT}`"
 }
