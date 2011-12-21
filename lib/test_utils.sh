@@ -52,3 +52,20 @@ assertNotContains()
     fail "Did not expect <${haystack}> to contain <${needle}>"
   fi 
 }
+
+command_exists()
+{
+  command -v "$1" &>/dev/null
+}
+
+assertFileMD5()
+{
+  expectedHash=$1
+  filename=$2
+
+  if command_exists md5; then
+    assertEquals "MD5 (${filename}) = ${expectedHash}" "`md5 ${filename}`"
+  elif command_exists md5sum; then
+    assertEquals "${expectedHash}  ${filename}" "`md5sum ${filename}`"
+  fi
+}
