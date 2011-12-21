@@ -60,14 +60,14 @@ testAssertNotContains_DefaultMessageOnFailure()
 }
 
 
-testMD5()
+testAssertFileMD5()
 {
   touch ${OUTPUT_DIR}/salty
   assertFileMD5 "d41d8cd98f00b204e9800998ecf8427e" "${OUTPUT_DIR}/salty"
 }
 
 
-testMD5_Failure()
+testAssertFileMD5_Failure()
 {
   touch ${OUTPUT_DIR}/salty
   ( capture assertFileMD5 "INVALID_MD5" "${OUTPUT_DIR}/salty" )
