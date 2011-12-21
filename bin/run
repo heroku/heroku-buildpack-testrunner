@@ -2,6 +2,15 @@
 
 export BUILDPACK_TEST_RUNNER_HOME=$(cd $(dirname $0); cd ..; pwd)
 
+max()
+{
+  if [ $1 -gt $2 ]; then
+    echo $1
+  else
+    echo $2
+  fi
+}
+
 if [ 0 -eq $# ]; then
   echo "Buildpack Test Runner"
   echo "Usage: run buildpack_1 [buildpack_2 [...]]"
@@ -20,11 +29,13 @@ for bp in $@; do
     
   if [ ! -d ${bp} ]; then
     echo "${bp} is not a directory" >&2
+    exit_code=$(max ${exit_code} 1)
     continue
   fi
 
   if [ -z "$(ls ${bp}/test/*_test.sh 2>/dev/null)" ]; then
     echo "Buildpack '${bp}' does not contain valid tests. Must contain a 'test' directory and with files matching '*_test.sh'" >&2
+    exit_code=$(max ${exit_code} 1)
     continue
   fi
 
@@ -34,7 +45,7 @@ for bp in $@; do
   for f in ${BUILDPACK_HOME}/test/*_test.sh; do
     echo "Running test suite: ${f}"
     ${SHUNIT_HOME?"'SHUNIT_HOME' environment variable must be set"}/src/shunit2 ${f}
-    exit_code=$(expr ${exit_code} + $?)
+    exit_code=$(max ${exit_code} $?)
   done
 
   if [ -d ${tmp_repo} ]; then
