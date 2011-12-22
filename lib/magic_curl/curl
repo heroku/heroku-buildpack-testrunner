@@ -1,7 +1,13 @@
 #!/bin/sh
 
 cache_root=/tmp/magic_curl_cache
-real_curl=/usr/bin/curl
+
+for c in $(which -a curl); do
+  if [ ${c} != ${0} ]; then
+    real_curl=${c}
+    break
+  fi
+done 
 
 url=${@:$#}
 rel_path=$(echo ${url} | sed -r "s/https?:\/\/(.*)/\1/")
