@@ -1,6 +1,7 @@
 #!/bin/sh
 
-cache_root=/tmp/magic_curl_cache
+#cache_dir=$(cat $(dirname ${0})/../conf/cache.conf | sed -r "s/cache_dir=(.*)$/\1/")
+cache_dir=$(sed '/^\#/d' $(dirname ${0})/../conf/cache.conf | grep 'cache_dir'  | tail -n 1 | cut -d "=" -f2-)
 
 # find the real curl cmd
 for c in $(which -a curl); do
@@ -8,11 +9,11 @@ for c in $(which -a curl); do
     real_curl=${c}
     break
   fi
-done 
+done
 
 url=${@:$#}
 rel_path=$(echo ${url} | sed -r "s/https?:\/\/(.*)/\1/")
-local_path="${cache_root}/${rel_path}"
+local_path="${cache_dir}/${rel_path}"
 
 # Is it locally cached?
 if [ ! -f ${local_path} ]; then
