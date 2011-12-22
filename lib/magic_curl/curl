@@ -1,0 +1,15 @@
+#!/bin/sh
+
+cache_root=/tmp/magic_curl_cache
+real_curl=/usr/bin/curl
+
+url=${@:$#}
+rel_path=$(echo ${url} | sed -r "s/https?:\/\/(.*)/\1/")
+local_path="${cache_root}/${rel_path}"
+
+if [ ! -f ${local_path} ]; then
+  mkdir -p $(dirname ${local_path})
+  ${real_curl} $@ > ${local_path}
+fi
+
+exec ${real_curl} --silent file:///${local_path}
