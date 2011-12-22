@@ -13,15 +13,19 @@ max()
 
 if [ 0 -eq $# ]; then
   echo "Buildpack Test Runner"
-  echo "Usage: run buildpack_1 [buildpack_2 [...]]"
-  echo "where 'buildpack_n can either be a local directory or a remote Git repository ending in .git"
+  echo "Usage: run [-c] buildpack_1 [buildpack_2 [...]]"
+  echo "-c\tuse Magic cUrl cache"
+  echo "where 'buildpack_n' can either be a local directory or a remote Git repository ending in .git"
   exit 1
 fi
 
-export PATH=${BUILDPACK_TEST_RUNNER_HOME}/lib/magic_curl:${PATH}
+if [ ${1} == "-c" ]; then
+  shift
+  export PATH=${BUILDPACK_TEST_RUNNER_HOME}/lib/magic_curl:${PATH}
+fi
 
 exit_code=0
-for bp in $@; do
+for bp in ${@}; do
   echo "${bp}" | grep -q -e ".*\.git$"
   if [ 0 -eq $? ]; then
     tmp_repo="$(mktemp -d /tmp/heroku_buildpack_testrunner_tmp_repo.XXXX)"
