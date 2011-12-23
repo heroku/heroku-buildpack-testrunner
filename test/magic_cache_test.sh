@@ -9,7 +9,9 @@ testCaching()
   cached_file="${cache_dir}/repo1.maven.org/maven2/com/force/api/force-wsc/23.0.0/force-wsc-23.0.0.jar"
   local_file=${OUTPUT_DIR}/the.jar
 
-  rm ${cached_file} &>/dev/null
+  if [ -f ${cached_file} ]; then
+    rm ${cached_file}
+  fi
   assertFalse "[ -f ${cached_file} ]"
 
   capture ${BUILDPACK_TEST_RUNNER_HOME}/lib/magic_curl/bin/curl ${url}
