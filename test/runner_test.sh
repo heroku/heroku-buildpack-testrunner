@@ -75,3 +75,15 @@ testNoArgsPrintsUsage()
   assertEquals "" "$(cat ${STD_ERR})"
   assertEquals "1" "${rtrn}"
 }
+
+testCachingArg()
+{
+  mkdir -p ${OUTPUT_DIR}/valid_buildpack/test
+  touch ${OUTPUT_DIR}/valid_buildpack/test/sample_test.sh
+
+  capture ${BUILDPACK_TEST_RUNNER_HOME}/bin/run -c ${OUTPUT_DIR}/valid_buildpack
+  assertContains "Running test suite: ${OUTPUT_DIR}/valid_buildpack" "$(cat ${STD_OUT})"
+  assertContains "Ran 0 tests." "$(cat ${STD_OUT})"
+  assertEquals "" "$(cat ${STD_ERR})"
+  assertEquals "0" "${rtrn}"
+}

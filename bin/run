@@ -12,14 +12,18 @@ max()
 }
 
 if [ 0 -eq $# ]; then
-  echo "Buildpack Test Runner"
-  echo "Usage: run [-c] buildpack_1 [buildpack_2 [...]]"
-  echo "-c\tuse Magic cUrl cache"
-  echo "where 'buildpack_n' can either be a local directory or a remote Git repository ending in .git"
+  cat <<EOF
+Buildpack Test Runner
+
+Usage: run [-c] buildpack_1 [buildpack_2 [...]]
+
+         -c   enable cUrl caching
+buildpack_n  local directory or a remote Git repository ending in .git for buildpack
+EOF
   exit 1
 fi
 
-if [ ${1} == "-c" ]; then
+if [ "${1}" = "-c" ]; then
   shift
   export PATH=${BUILDPACK_TEST_RUNNER_HOME}/lib/magic_curl/bin:${PATH}
 fi
