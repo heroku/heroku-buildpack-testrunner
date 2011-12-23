@@ -25,10 +25,11 @@ Usage
 -----
 To run the tests for one or more buildpacks, execute:
 
-`bin/run buildpack_1 [buildpack_2 [...]]`
+`bin/run [-c] buildpack_1 [buildpack_2 [...]]`
 
 where `buildpack_n` can either be a local directory or a remote Git repository ending in `.git`.
 Each buildpack must have a `test` directory and files matching the `*_test.sh` pattern to be run.
+The `-c` flag enables persistent caching of files downloaded with cUrl. See `lib/magic_curl/README.md` for more info.
 
 For example, the following command:
 
