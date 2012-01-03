@@ -14,9 +14,10 @@ testCaching()
   fi
   assertFalse "[ -f ${cached_file} ]"
 
-  capture ${BUILDPACK_TEST_RUNNER_HOME}/lib/magic_curl/bin/curl ${url}
+  capture ${BUILDPACK_TEST_RUNNER_HOME}/lib/magic_curl/bin/curl --silent ${url} --compressed
   
   assertTrue "[ -f ${cached_file} ]"
   assertFileMD5 "57e2997c35da552ede220f118d1fa941" ${cached_file}
   assertFileMD5 "57e2997c35da552ede220f118d1fa941" ${STD_OUT}
+  assertEquals "" "$(cat ${STD_ERR})"
 }

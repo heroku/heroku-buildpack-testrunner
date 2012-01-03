@@ -11,8 +11,17 @@ for c in $(which -a curl); do
   fi
 done
 
-for url; do true; done
-rel_path=$(echo ${url} | sed -r "s/https?:\/\/(.*)/\1/")
+for arg; do
+  echo "${arg}" | grep -q -E "https?://"
+  if [ 0 -eq $? ]; then
+    rel_path=$(echo ${arg} | sed -r "s/https?:\/\/(.*)/\1/")
+    break
+  fi
+done
+if [ -z ${rel_path} ]; then
+  echo "No URL argument provided" >&2 
+  exit 1
+fi 
 local_path="${cache_dir}/${rel_path}"
 
 # Is it locally cached?
