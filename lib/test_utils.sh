@@ -29,28 +29,38 @@ resetCapture()
   rm ${STD_ERR}
 }
 
-assertContains()
+_assertContains()
 {
+  if [ 4 -eq $# ]; then
+    msg=$1
+    shift
+  elif [ ! 3 -eq $# ]; then
+    fail "Expected 3 or 4 parameters; Receieved $# parameters"
+  fi
+
   needle=$1
   haystack=$2
-
+  expectation=$3
+    
   echo "${haystack}" | grep -q -F -e "${needle}"
-  if [ 1 -eq $? ]
-  then
-    fail "Expected <${haystack}> to contain <${needle}>"
-  fi 
+  if [ "${expectation}" != "$?" ]; then
+    case "${expectation}" in
+      0) default_msg="Expected <${haystack}> to contain <${needle}>" ;;
+      1) default_msg="Did not expect <${haystack}> to contain <${needle}>" ;;
+    esac
+
+    fail "${msg:-${default_msg}}"
+  fi   
+}
+
+assertContains()
+{
+  _assertContains "$@" 0
 }
 
 assertNotContains()
 {
-  needle=$1
-  haystack=$2
-
-  echo "${haystack}" | grep -q -F -e "${needle}"
-  if [ 0 -eq $? ]
-  then
-    fail "Did not expect <${haystack}> to contain <${needle}>"
-  fi 
+  _assertContains "$@" 1
 }
 
 command_exists () {

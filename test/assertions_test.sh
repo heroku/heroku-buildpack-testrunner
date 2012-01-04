@@ -27,6 +27,14 @@ EOF`
   assertContains "her" "${haystack}"
 }
 
+testAssertContains_SpecifedMessageOnFailure()
+{
+  ( capture assertContains "custom" "xxx" "zookeeper" )
+  assertEquals "ASSERT:custom" "`cat ${STD_OUT}`"
+  assertEquals "" "`cat ${STD_ERR}`"
+  assertEquals "" "${rtrn}"
+}
+
 testAssertContains_DefaultMessageOnFailure()
 {
   ( capture assertContains "xxx" "zookeeper" )
