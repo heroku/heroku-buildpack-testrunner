@@ -30,16 +30,16 @@ EOF`
 testAssertContains_SpecifedMessageOnFailure()
 {
   ( capture assertContains "custom" "xxx" "zookeeper" )
-  assertEquals "ASSERT:custom" "`cat ${STD_OUT}`"
-  assertEquals "" "`cat ${STD_ERR}`"
+  assertEquals "ASSERT:custom" "$(cat ${STD_OUT})"
+  assertEquals "" "$(cat ${STD_ERR})"
   assertEquals "" "${rtrn}"
 }
 
 testAssertContains_DefaultMessageOnFailure()
 {
   ( capture assertContains "xxx" "zookeeper" )
-  assertEquals "ASSERT:Expected <zookeeper> to contain <xxx>" "`cat ${STD_OUT}`"
-  assertEquals "" "`cat ${STD_ERR}`"
+  assertEquals "ASSERT:Expected <zookeeper> to contain <xxx>" "$(cat ${STD_OUT})"
+  assertEquals "" "$(cat ${STD_ERR})"
   assertEquals "" "${rtrn}"
 }
 
@@ -62,8 +62,8 @@ EOF`
 testAssertNotContains_DefaultMessageOnFailure()
 {
   ( capture assertNotContains "keep" "zookeeper" )
-  assertEquals "ASSERT:Did not expect <zookeeper> to contain <keep>" "`cat ${STD_OUT}`"
-  assertEquals "" "`cat ${STD_ERR}`"
+  assertEquals "ASSERT:Did not expect <zookeeper> to contain <keep>" "$(cat ${STD_OUT})"
+  assertEquals "" "$(cat ${STD_ERR})"
   assertEquals "" "${rtrn}"
 }
 
@@ -79,6 +79,6 @@ testAssertFileMD5_Failure()
 {
   touch ${OUTPUT_DIR}/salty
   ( capture assertFileMD5 "INVALID_MD5" "${OUTPUT_DIR}/salty" )
-  assertContains "d41d8cd98f00b204e9800998ecf8427e" "`cat ${STD_OUT}`"
-  assertContains "${OUTPUT_DIR}/salty" "`cat ${STD_OUT}`"
+  assertContains "d41d8cd98f00b204e9800998ecf8427e" "$(cat ${STD_OUT})"
+  assertContains "${OUTPUT_DIR}/salty" "$(cat ${STD_OUT})"
 }
