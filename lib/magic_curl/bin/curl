@@ -11,23 +11,30 @@ for c in $(which -a curl); do
   fi
 done
 
+# find the URL argument and set path vars
 for arg; do
-  echo "${arg}" | grep -q -E "https?://"
+  echo "${arg}" | grep -q -E "^https?://"
   if [ 0 -eq $? ]; then
-    rel_path=$(echo ${arg} | sed -r "s/https?:\/\/(.*)/\1/")
+    rel_path=$(echo ${arg} | sed -r "s/^https?:\/\/(.*)/\1/")
+    local_path="${cache_dir}/${rel_path}"
     break
   fi
 done
-if [ -z ${rel_path} ]; then
-  echo "No URL argument provided" >&2 
-  exit 1
-fi 
-local_path="${cache_dir}/${rel_path}"
 
-# Is it locally cached?
+# if the rel_path could not be found, just run curl directly
+# this should only happen when someone doesn't supply a URL we can handle or no URL at all
+if [ -z ${rel_path} ]; then
+  exec ${real_curl} $@
+fi 
+
+# Write to the cache using the real curl cmd with the supplied arguments
+output_arg_pattern="[ ]*(-o|--output)[ ]+[^ ]+"
 if [ ! -f ${local_path} ]; then
   mkdir -p $(dirname ${local_path})
-  ${real_curl} $@ > ${local_path}
+  args_without_output=$(echo "$@" | sed -r "s/${output_arg_pattern}//g")
+  ${real_curl} ${args_without_output} > ${local_path}
 fi
 
-exec ${real_curl} --silent file:///${local_path}
+# Use the real curl cmd to read from the local cache
+output_arg=$(echo "$@" | grep -o -E -e "${output_arg_pattern}")
+exec ${real_curl} --silent file:///${local_path} ${output_arg}
