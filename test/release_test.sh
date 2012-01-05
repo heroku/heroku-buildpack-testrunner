@@ -11,6 +11,7 @@ config_vars:
 
 default_process_types:
   tests: .buildpack-testrunner/bin/run .
+  tests-with-caching: .buildpack-testrunner/bin/run -c .
 EOF`
 
   capture ${BUILDPACK_HOME}/bin/release ${BUILD_DIR}
