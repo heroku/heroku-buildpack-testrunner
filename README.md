@@ -9,23 +9,24 @@ Setup
 -----
 First clone this repository:
 
-`git clone git@github.com:heroku/heroku-buildpack-testrunner.git`
+    git clone git@github.com:heroku/heroku-buildpack-testrunner.git
 
 If you do not already have shUnit2 installed, either [download](http://code.google.com/p/shunit2/downloads/list)
 it or checkout it out from SVN:
 
-`svn checkout http://shunit2.googlecode.com/svn/trunk/ shunit2`
+    svn checkout http://shunit2.googlecode.com/svn/trunk/ shunit2
 
-Do not use `apt-get` for obtaining shUnit2 because it the wrong version.
+Do not use `apt-get` for obtaining shUnit2 because it is the wrong version.
 
 Once you have shUnit2, set an `SHUNIT_HOME` environment variable to the root of the version you wish to use. For example:
-`export SHUNIT_HOME=/usr/local/bin/shunit/source/2.1`
+
+    export SHUNIT_HOME=/usr/local/bin/shunit/source/2.1
 
 Usage
 -----
 To run the tests for one or more buildpacks, execute:
 
-`bin/run [-c] buildpack_1 [buildpack_2 [...]]`
+    bin/run [-c] buildpack_1 [buildpack_2 [...]]
 
 where `buildpack_n` can either be a local directory or a remote Git repository ending in `.git`.
 Each buildpack must have a `test` directory and files matching the `*_test.sh` pattern to be run.
@@ -33,17 +34,59 @@ The `-c` flag enables persistent caching of files downloaded with cUrl. See `lib
 
 For example, the following command:
 
-`bin/run ~/a_local_buildpack git@github.com:rbrainard/heroku-buildpack-gradle.git`
+    bin/run ~/a_local_buildpack git@github.com:rbrainard/heroku-buildpack-gradle.git
 
 Would first run the tests in the buildpack at `~/a_local_buildpack` and then clone the
 Git repository at `git@github.com:rbrainard/heroku-buildpack-gradle.git` into a temp
 directory and run the tests there too.
 
+Writing Unit Tests for a Buildpack
+----------------------------------
+Writing tests for a buildpack is similar to any other xUnit framework, but the steps below summarize what you need to get started testing a buildpack:
+
+1. Create a `test` directory in the root of the buildpack.
+
+2. Create test scripts in the `test` directory ending in `_test.sh`. 
+They can be grouped any way you like, but creating a test script for each buildpack script is recommended. 
+For example the `detect` script should have a corresponding `detect_test.sh` test script.
+
+3. It is recommended (but not required) to source in the `test_utils.sh` script at the beginning of your test script.
+This contains common functions for setup, teardown, and asserting buildpack behavior.
+ 
+    `. ${BUILDPACK_TEST_RUNNER_HOME}/lib/test_utils.sh`
+
+4. Each test case in the script should be contained a function starting with `test`. 
+Like testing with other xUnit frameworks, the test cases should be fairly granular
+and try not to depend on outside factors or upon each other. 
+
+If you are using `test_util.sh`, at the beginning of each test case, you will be provided empty `${BUILD_DIR}` and `${CACHE_DIR}`
+directories for use with buildpack scripts. These directories are deleted after each test case completes. You will also be provided a
+`${BUILDPACK_HOME}` value to deterministically find the root of your buildpack.
+
+When running buildpack scripts, it is recommended to use the `capture` command to capture the stdout, stderr, and return value of the script.
+Just place the `capture` command before to your statement, and you can then access the `${STD_OUT}` file, `${STD_ERR}` file, and `${rtrn}` value
+after it completes. For example, to run the `compile` script and capture all its output:
+
+    capture ${BUILDPACK_HOME}/bin/compile ${BUILD_DIR} ${CACHE_DIR} 
+
+You can then assert its behavior by reading the captured output:
+  
+    assertEquals 0 "${rtrn}"
+    assertContains "expected output" "$(cat ${STD_OUT})"
+    assertEquals "" "$(cat ${STD_ERR})"
+
+All captured data is cleared betweeen test cases, but in case you need to capture two different commands in one test case, run the `resetCapture` command; 
+however, if you find yourself doing this too much, consider making your test cases more granular. Rememeber you can use the `-c` flag locally to cache 
+downloads, which can signifigantly increase the speed of tests that make heavy use of `curl`.
+
+If you are downloading files in tests, it is highly recommended to use `assertFileMD5 expectedHash filename` to make sure you actually downloaded the correct file.
+This assertion is more portable between platforms rather than computing the MD5 yourself.
+
 Metatesting
 -----------
-The tests for the testrunner work just like any other buildpack. To test the testrunner itself, just run:
+The tests for the testrunner itself work just like any other buildpack. To test the testrunner itself, just run:
 
-`bin/run .`
+   `bin/run .`
 
 This can be helpful to make sure all the testrunner libraries work on your platform before testing any real buildpacks.
 
