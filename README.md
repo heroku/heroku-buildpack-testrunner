@@ -1,4 +1,4 @@
-Buildpack Test Runner
+Buildpack Testrunner
 =====================
 A simple unit testing framework for testing buildpacks.
 It provides utilities for loading buildpacks and capturing and asserting their behavior.

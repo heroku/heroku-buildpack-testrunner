@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir>
+
+# fail fast
+set -e
+
+# parse args
+BUILD_DIR=$1
+CACHE_DIR=$2
+
+BP_DIR=`cd $(dirname $0); cd ..; pwd`
+
+SHUNIT_VERSION="2.1.6"
+SHUNIT_DIST="shunit2-${SHUNIT_VERSION}"
+SHUNIT_DIST_TAR="${SHUNIT_DIST}.tgz"
+SHUNIT_HOME="${BUILD_DIR}/.shunit2"
+
+[ ! -d ${CACHE_DIR} ] && mkdir -p ${CACHE_DIR}
+
+# Download Shunit if not in cache
+if [ ! -f ${CACHE_DIR}/${SHUNIT_DIST_TAR} ]; then  
+  SHUNIT_URL="http://shunit2.googlecode.com/files/${SHUNIT_DIST_TAR}"
+  echo -n "-----> Downloading ${SHUNIT_DIST}....."
+  curl --silent --location ${SHUNIT_URL} > ${CACHE_DIR}/${SHUNIT_DIST_TAR}
+  echo " done"
+fi
+
+echo -n "-----> Installing ${SHUNIT_DIST}...."
+
+# Untar ShUnit
+cd ${BUILD_DIR}
+tar -zxf ${CACHE_DIR}/${SHUNIT_DIST_TAR}
+mv ${SHUNIT_DIST} ${SHUNIT_HOME}
+echo " done"
+
+if [ "${PIPESTATUS[*]}" != "0" ]; then
+  echo " !     Failed to install ${SHUNIT_DIST}"
+  exit 1
+fi
+
+# Copy ourselves into the build dir so tests can be run
+echo -n "-----> Installing Buildpack Testrunner...."
+cp -r ${BP_DIR} ${BUILD_DIR}/.buildpack-testrunner
+echo " done"
+
+if [ "${PIPESTATUS[*]}" != "0" ]; then
+  echo " !     Failed to install Buildpack Testrunner"
+  exit 1
+fi
+

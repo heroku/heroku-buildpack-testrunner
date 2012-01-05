@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# bin/release <build-dir>
+
+BUILD_DIR=$1
+
+cat <<EOF
+---
+config_vars:
+  SHUNIT_HOME: ${BUILD_DIR}/.shunit2
+
+default_process_types:
+  run: .buildpack-testrunner/bin/run .
+EOF
+
