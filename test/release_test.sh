@@ -7,10 +7,10 @@ testRelease()
   expected_release_output=`cat <<EOF
 ---
 config_vars:
-  SHUNIT_HOME: ${BUILD_DIR}/.shunit2
+  SHUNIT_HOME: /app/.shunit2
 
 default_process_types:
-  run: .buildpack-testrunner/bin/run .
+  tests: .buildpack-testrunner/bin/run .
 EOF`
 
   capture ${BUILDPACK_HOME}/bin/release ${BUILD_DIR}
