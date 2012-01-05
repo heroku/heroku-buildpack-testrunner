@@ -28,6 +28,7 @@ if [ "${1}" = "-c" ]; then
   export PATH=${BUILDPACK_TEST_RUNNER_HOME}/lib/magic_curl/bin:${PATH}
 fi
 
+all_start_time="$(date +%s)"
 exit_code=0
 for bp in ${@}; do
   echo "${bp}" | grep -q -e ".*\.git$"
@@ -49,18 +50,32 @@ for bp in ${@}; do
     continue
   fi
 
-  echo "Running tests for buildpack: ${bp}"
+  bp_start_time="$(date +%s)"
+  echo "\nRunning tests for buildpack '${bp}'"
   export BUILDPACK_HOME=${bp}
 
   for f in ${BUILDPACK_HOME}/test/*_test.sh; do
-    echo "Running test suite: ${f}"
+    suite_start_time="$(date +%s)"
+
+    echo "Running test suite '${f}'"
     ${SHUNIT_HOME?"'SHUNIT_HOME' environment variable must be set"}/src/shunit2 ${f}
     exit_code=$(max ${exit_code} $?)
+
+    suite_end_time="$(date +%s)"
+    suite_elapsed_time="$(expr ${suite_end_time} - ${suite_start_time})"
+    echo "Completed test suite '${f}' in $(date -u -r ${suite_elapsed_time} +%H:%M:%S)\n"
   done
+  bp_end_time="$(date +%s)"
+  bp_elapsed_time="$(expr ${bp_end_time} - ${bp_start_time})"
+  echo "Completed tests in '${bp}' in $(date -u -r ${bp_elapsed_time} +%H:%M:%S)"
 
   if [ -d ${tmp_repo} ]; then
     rm -rf ${tmp_repo}
   fi
 done
+
+all_end_time="$(date +%s)"
+all_elapsed_time="$(expr ${all_end_time} - ${all_start_time})"
+echo "\nCompleted all buildpack tests in $(date -u -r ${all_elapsed_time} +%H:%M:%S)"
 
 exit ${exit_code}
