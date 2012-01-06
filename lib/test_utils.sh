@@ -31,18 +31,23 @@ resetCapture()
 
 _assertContains()
 {
-  if [ 4 -eq $# ]; then
+  if [ 5 -eq $# ]; then
     msg=$1
     shift
-  elif [ ! 3 -eq $# ]; then
-    fail "Expected 3 or 4 parameters; Receieved $# parameters"
+  elif [ ! 4 -eq $# ]; then
+    fail "Expected 4 or 5 parameters; Receieved $# parameters"
   fi
 
   needle=$1
   haystack=$2
   expectation=$3
-    
-  echo "${haystack}" | grep -q -F -e "${needle}"
+  haystack_type=$4
+  
+  case "${haystack_type}" in
+    "file") grep -q -F -e "${needle}" ${haystack} ;;
+    "text") echo "${haystack}" | grep -q -F -e "${needle}" ;;
+  esac
+
   if [ "${expectation}" != "$?" ]; then
     case "${expectation}" in
       0) default_msg="Expected <${haystack}> to contain <${needle}>" ;;
@@ -55,12 +60,22 @@ _assertContains()
 
 assertContains()
 {
-  _assertContains "$@" 0
+  _assertContains "$@" 0 "text"
 }
 
 assertNotContains()
 {
-  _assertContains "$@" 1
+  _assertContains "$@" 1 "text"
+}
+
+assertFileContains()
+{
+  _assertContains "$@" 0 "file"
+}
+
+assertFileNotContains()
+{
+  _assertContains "$@" 1 "file"
 }
 
 command_exists () {

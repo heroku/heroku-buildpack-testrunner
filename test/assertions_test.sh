@@ -67,6 +67,35 @@ testAssertNotContains_DefaultMessageOnFailure()
   assertEquals "" "${rtrn}"
 }
 
+testAssertFileContains()
+{
+  cat > ${OUTPUT_DIR}/petting-zoo.txt <<EOF
+goat
+sheep
+llama
+EOF
+
+  assertFileContains "goat" ${OUTPUT_DIR}/petting-zoo.txt
+  assertFileContains "sheep" ${OUTPUT_DIR}/petting-zoo.txt
+  assertFileContains "llama" ${OUTPUT_DIR}/petting-zoo.txt
+
+  ( capture assertFileContains "mammoth" ${OUTPUT_DIR}/petting-zoo.txt )
+  assertEquals "ASSERT:Expected <${OUTPUT_DIR}/petting-zoo.txt> to contain <mammoth>" "$(cat ${STD_OUT})"
+}
+
+testAssertFileNotContains()
+{
+  cat > ${OUTPUT_DIR}/petting-zoo.txt <<EOF
+goat
+sheep
+llama
+EOF
+
+  assertFileNotContains "mammoth" ${OUTPUT_DIR}/petting-zoo.txt
+
+  ( capture assertFileNotContains "sheep" ${OUTPUT_DIR}/petting-zoo.txt )
+  assertEquals "ASSERT:Did not expect <${OUTPUT_DIR}/petting-zoo.txt> to contain <sheep>" "$(cat ${STD_OUT})"
+}
 
 testAssertFileMD5()
 {
