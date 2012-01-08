@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 export BUILDPACK_TEST_RUNNER_HOME=$(cd $(dirname $0); cd ..; pwd)
 
@@ -32,7 +32,7 @@ all_start_time="$(date +%s)"
 exit_code=0
 for bp in ${@}; do
   bp_start_time="$(date +%s)"
-  echo "\nBUILDPACK: '${bp}'"
+  echo -e "\nBUILDPACK: '${bp}'"
 
   echo "${bp}" | grep -q -e ".*\.git$"
   if [ 0 -eq $? ]; then
@@ -64,7 +64,7 @@ for bp in ${@}; do
 
     suite_end_time="$(date +%s)"
     suite_elapsed_time="$(expr ${suite_end_time} - ${suite_start_time})"
-    echo "  ${suite_elapsed_time} SECONDS\n"
+    echo -e "  ${suite_elapsed_time} SECONDS\n"
   done
   bp_end_time="$(date +%s)"
   bp_elapsed_time="$(expr ${bp_end_time} - ${bp_start_time})"
@@ -75,7 +75,7 @@ for bp in ${@}; do
   fi
 done
 
-echo "\n------"
+echo -e "\n------"
 if [ ${exit_code} -eq 0 ]; then
   echo "ALL OK"
 else
