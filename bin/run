@@ -31,6 +31,9 @@ fi
 all_start_time="$(date +%s)"
 exit_code=0
 for bp in ${@}; do
+  bp_start_time="$(date +%s)"
+  echo "\nBUILDPACK: '${bp}'"
+
   echo "${bp}" | grep -q -e ".*\.git$"
   if [ 0 -eq $? ]; then
     tmp_repo="$(mktemp -d /tmp/heroku_buildpack_testrunner_tmp_repo.XXXX)"
@@ -39,43 +42,49 @@ for bp in ${@}; do
   fi
     
   if [ ! -d ${bp} ]; then
-    echo "${bp} is not a directory" >&2
+    echo "ERROR: ${bp} is not a directory" >&2
     exit_code=$(max ${exit_code} 1)
     continue
   fi
 
   if [ -z "$(ls ${bp}/test/*_test.sh 2>/dev/null)" ]; then
-    echo "Buildpack '${bp}' does not contain valid tests. Must contain a 'test' directory and with files matching '*_test.sh'" >&2
+    echo "ERROR: Buildpack '${bp}' does not contain valid tests. Must contain a 'test' directory and with files matching '*_test.sh'" >&2
     exit_code=$(max ${exit_code} 1)
     continue
   fi
 
-  bp_start_time="$(date +%s)"
-  echo "\nRunning tests for buildpack '${bp}'"
   export BUILDPACK_HOME=${bp}
 
   for f in ${BUILDPACK_HOME}/test/*_test.sh; do
     suite_start_time="$(date +%s)"
 
-    echo "Running test suite '${f}'"
-    ${SHUNIT_HOME?"'SHUNIT_HOME' environment variable must be set"}/src/shunit2 ${f}
-    exit_code=$(max ${exit_code} $?)
+    echo "  TEST SUITE: '${f}'"
+    ${SHUNIT_HOME?"'SHUNIT_HOME' environment variable must be set"}/src/shunit2 ${f} | sed -u 's/^/  /'
+    exit_code=$(max ${exit_code} ${PIPESTATUS[0]})
 
     suite_end_time="$(date +%s)"
     suite_elapsed_time="$(expr ${suite_end_time} - ${suite_start_time})"
-    echo "Completed test suite '${f}' in ${suite_elapsed_time} seconds\n"
+    echo "  ${suite_elapsed_time} SECONDS\n"
   done
   bp_end_time="$(date +%s)"
   bp_elapsed_time="$(expr ${bp_end_time} - ${bp_start_time})"
-  echo "Completed tests in '${bp}' in ${bp_elapsed_time} seconds"
+  echo "${bp_elapsed_time} SECONDS"
 
   if [ -d ${tmp_repo} ]; then
     rm -rf ${tmp_repo}
   fi
 done
 
+echo "\n------"
+if [ ${exit_code} -eq 0 ]; then
+  echo "ALL OK"
+else
+  echo "FAILURES (see individual results for details)"
+fi
+
 all_end_time="$(date +%s)"
 all_elapsed_time="$(expr ${all_end_time} - ${all_start_time})"
-echo "\nCompleted all buildpack tests in ${all_elapsed_time} seconds"
+echo "${all_elapsed_time} SECONDS"
+
 
 exit ${exit_code}

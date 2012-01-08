@@ -1,5 +1,15 @@
 #!/bin/sh
 
+oneTimeSetUp()
+{
+   TEST_SUITE_CACHE="$(mktemp -d ${SHUNIT_TMPDIR}/test_suite_cache.XXXX)"
+}
+
+oneTimeTearDown()
+{
+  rm -rf ${TEST_SUITE_CACHE}
+}
+
 setUp()
 {
   OUTPUT_DIR="$(mktemp -d ${SHUNIT_TMPDIR}/output.XXXX)"
