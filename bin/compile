@@ -47,4 +47,3 @@ if [ "${PIPESTATUS[*]}" != "0" ]; then
   echo " !     Failed to install Buildpack Testrunner"
   exit 1
 fi
-
