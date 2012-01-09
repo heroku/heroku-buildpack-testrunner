@@ -53,16 +53,16 @@ resetCapture()
 _assertContains()
 {
   if [ 5 -eq $# ]; then
-    local msg=$1
+    msg=$1
     shift
   elif [ ! 4 -eq $# ]; then
     fail "Expected 4 or 5 parameters; Receieved $# parameters"
   fi
 
-  local needle=$1
-  local haystack=$2
-  local expectation=$3
-  local haystack_type=$4
+  needle=$1
+  haystack=$2
+  expectation=$3
+  haystack_type=$4
   
   case "${haystack_type}" in
     "file") grep -q -F -e "${needle}" ${haystack} ;;
@@ -71,8 +71,8 @@ _assertContains()
 
   if [ "${expectation}" != "$?" ]; then
     case "${expectation}" in
-      0) local default_msg="Expected <${haystack}> to contain <${needle}>" ;;
-      1) local default_msg="Did not expect <${haystack}> to contain <${needle}>" ;;
+      0) default_msg="Expected <${haystack}> to contain <${needle}>" ;;
+      1) default_msg="Did not expect <${haystack}> to contain <${needle}>" ;;
     esac
 
     fail "${msg:-${default_msg}}"
