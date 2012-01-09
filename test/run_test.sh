@@ -92,3 +92,15 @@ testCachingArg()
   assertEquals "" "$(cat ${STD_ERR})"
   assertEquals "0" "${rtrn}"
 }
+
+testCaptureToDeprecatedRtrn()
+{
+  resetCapture
+  assertEquals "" "${RETURN}"
+  assertEquals "" "${rtrn}"
+  
+  capture ls
+
+  assertEquals "0" "${RETURN}"
+  assertEquals "0" "${rtrn}"
+}

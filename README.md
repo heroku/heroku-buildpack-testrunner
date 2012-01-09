@@ -112,14 +112,14 @@ directories for use with buildpack scripts. These directories are deleted after 
 `${BUILDPACK_HOME}` value to deterministically find the root of your buildpack.
 
 When running buildpack scripts, it is recommended to use the `capture` command to capture the stdout, stderr, and return value of the script.
-Just place the `capture` command before to your statement, and you can then access the `${STD_OUT}` file, `${STD_ERR}` file, and `${rtrn}` value
+Just place the `capture` command before to your statement, and you can then access the `${STD_OUT}` file, `${STD_ERR}` file, and `${RETURN}` value
 after it completes. For example, to run the `compile` script and capture all its output:
 
     capture ${BUILDPACK_HOME}/bin/compile ${BUILD_DIR} ${CACHE_DIR} 
 
 You can then assert its behavior by reading the captured output:
   
-    assertEquals 0 "${rtrn}"
+    assertEquals 0 "${RETURN}"
     assertContains "expected output" "$(cat ${STD_OUT})"
     assertEquals "" "$(cat ${STD_ERR})"
 
