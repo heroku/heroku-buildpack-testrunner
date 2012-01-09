@@ -8,7 +8,7 @@ testValidBuildpackWithTests()
   touch ${OUTPUT_DIR}/valid_buildpack/test/sample_test.sh
 
   capture ${BUILDPACK_TEST_RUNNER_HOME}/bin/run ${OUTPUT_DIR}/valid_buildpack
-  assertContains "BUILDPACK: '${OUTPUT_DIR}/valid_buildpack'" "$(cat ${STD_OUT})"
+  assertContains "BUILDPACK: ${OUTPUT_DIR}/valid_buildpack" "$(cat ${STD_OUT})"
   assertContains "Ran 0 tests." "$(cat ${STD_OUT})"
   assertContains "ALL OK" "$(cat ${STD_OUT})"
   assertNotContains "FAILURES (see individual results for details)" "$(cat ${STD_OUT})"
@@ -19,7 +19,7 @@ testValidBuildpackWithTests()
 testInvalidBuildpackDirectory()
 {
   capture ${BUILDPACK_TEST_RUNNER_HOME}/bin/run ${OUTPUT_DIR}/invalid_buildpack
-  assertEquals "ERROR: ${OUTPUT_DIR}/invalid_buildpack is not a directory" "$(cat ${STD_ERR})"
+  assertEquals "ERROR: '${OUTPUT_DIR}/invalid_buildpack' is not a directory" "$(cat ${STD_ERR})"
   assertNotContains "ALL OK" "$(cat ${STD_OUT})"
   assertContains "FAILURES (see individual results for details)" "$(cat ${STD_OUT})"
   assertEquals "1" "${rtrn}"
@@ -51,9 +51,9 @@ testValidBuildpackWithTestsAndThenInvalidBuildpackWithoutTests()
   touch ${OUTPUT_DIR}/valid_buildpack/test/sample_test.sh
 
   capture ${BUILDPACK_TEST_RUNNER_HOME}/bin/run ${OUTPUT_DIR}/valid_buildpack ${OUTPUT_DIR}/invalid_buildpack
-  assertContains "BUILDPACK: '${OUTPUT_DIR}/valid_buildpack'" "$(cat ${STD_OUT})"
+  assertContains "BUILDPACK: ${OUTPUT_DIR}/valid_buildpack" "$(cat ${STD_OUT})"
   assertContains "Ran 0 tests." "$(cat ${STD_OUT})"
-  assertEquals "ERROR: ${OUTPUT_DIR}/invalid_buildpack is not a directory" "$(cat ${STD_ERR})"
+  assertEquals "ERROR: '${OUTPUT_DIR}/invalid_buildpack' is not a directory" "$(cat ${STD_ERR})"
   assertNotContains "ALL OK" "$(cat ${STD_OUT})"
   assertContains "FAILURES (see individual results for details)" "$(cat ${STD_OUT})"
   assertEquals "1" "${rtrn}"
@@ -65,9 +65,9 @@ testInvalidBuildpackWithoutTestsAndThenValidBuildpackWithTests()
   touch ${OUTPUT_DIR}/valid_buildpack/test/sample_test.sh
 
   capture ${BUILDPACK_TEST_RUNNER_HOME}/bin/run ${OUTPUT_DIR}/invalid_buildpack ${OUTPUT_DIR}/valid_buildpack
-  assertContains "BUILDPACK: '${OUTPUT_DIR}/valid_buildpack'" "$(cat ${STD_OUT})"
+  assertContains "BUILDPACK: ${OUTPUT_DIR}/valid_buildpack" "$(cat ${STD_OUT})"
   assertContains "Ran 0 tests." "$(cat ${STD_OUT})"
-  assertEquals "ERROR: ${OUTPUT_DIR}/invalid_buildpack is not a directory" "$(cat ${STD_ERR})"
+  assertEquals "ERROR: '${OUTPUT_DIR}/invalid_buildpack' is not a directory" "$(cat ${STD_ERR})"
   assertNotContains "ALL OK" "$(cat ${STD_OUT})"
   assertContains "FAILURES (see individual results for details)" "$(cat ${STD_OUT})"
   assertEquals "1" "${rtrn}"
@@ -87,7 +87,7 @@ testCachingArg()
   touch ${OUTPUT_DIR}/valid_buildpack/test/sample_test.sh
 
   capture ${BUILDPACK_TEST_RUNNER_HOME}/bin/run -c ${OUTPUT_DIR}/valid_buildpack
-  assertContains "BUILDPACK: '${OUTPUT_DIR}/valid_buildpack'" "$(cat ${STD_OUT})"
+  assertContains "BUILDPACK: ${OUTPUT_DIR}/valid_buildpack" "$(cat ${STD_OUT})"
   assertContains "Ran 0 tests." "$(cat ${STD_OUT})"
   assertEquals "" "$(cat ${STD_ERR})"
   assertEquals "0" "${rtrn}"

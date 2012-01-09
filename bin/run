@@ -32,7 +32,7 @@ all_start_time="$(date +%s)"
 exit_code=0
 for bp in ${@}; do
   bp_start_time="$(date +%s)"
-  echo -e "\nBUILDPACK: '${bp}'"
+  echo -e "\nBUILDPACK: ${bp}"
 
   echo "${bp}" | grep -q -e ".*\.git$"
   if [ 0 -eq $? ]; then
@@ -42,7 +42,7 @@ for bp in ${@}; do
   fi
     
   if [ ! -d ${bp} ]; then
-    echo "ERROR: ${bp} is not a directory" >&2
+    echo "ERROR: '${bp}' is not a directory" >&2
     exit_code=$(max ${exit_code} 1)
     continue
   fi
@@ -58,7 +58,7 @@ for bp in ${@}; do
   for f in ${BUILDPACK_HOME}/test/*_test.sh; do
     suite_start_time="$(date +%s)"
 
-    echo "  TEST SUITE: '${f}'"
+    echo "  TEST SUITE: ${f}"
     ${SHUNIT_HOME?"'SHUNIT_HOME' environment variable must be set"}/src/shunit2 ${f} | sed -u 's/^/  /'
     exit_code=$(max ${exit_code} ${PIPESTATUS[0]})
 
