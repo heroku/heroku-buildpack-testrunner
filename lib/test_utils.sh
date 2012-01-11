@@ -50,6 +50,43 @@ resetCapture()
   unset rtrn # deprecated
 }
 
+detect()
+{
+  capture ${BUILDPACK_HOME}/bin/detect ${BUILD_DIR}
+}
+
+compile()
+{
+  capture ${BUILDPACK_HOME}/bin/compile ${BUILD_DIR} ${CACHE_DIR}
+}
+
+release()
+{
+  capture ${BUILDPACK_HOME}/bin/release ${BUILD_DIR}
+}
+
+
+assertCapturedSuccess()
+{
+  assertEquals "Expected captured exit code to be 0; was <${RETURN}>" "0" "${RETURN}"
+  assertEquals "Expected STD_ERR to be empty; was <$(cat ${STD_ERR})>" "" "$(cat ${STD_ERR})"
+}
+
+assertAppDetected()
+{
+  expectedAppType=${1?"Must provide app type"}
+
+  assertCapturedSuccess
+  assertEquals "${expectedAppType}" "$(cat ${STD_OUT})"
+}
+
+assertNoAppDetected()
+{
+  assertEquals "1" "${RETURN}"
+  assertEquals "no" "$(cat ${STD_OUT})"
+  assertEquals "" "$(cat ${STD_ERR})"
+}
+
 _assertContains()
 {
   if [ 5 -eq $# ]; then
