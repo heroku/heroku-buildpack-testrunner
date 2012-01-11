@@ -47,6 +47,26 @@ testDownloadWithOutputArgFollowedByOtherArgs()
   successfulCaching "--silent ${url} --output ${local_file}" "${local_file} --compressed"
 }
 
+testDownloadWithRemoteNameArg_Short()
+{
+  local_file=${OUTPUT_DIR}/force-wsc-23.0.0.jar
+  
+  pwd="$(pwd)"
+  cd ${OUTPUT_DIR}
+  successfulCaching "--silent -O ${url}" "${local_file}"
+  cd ${pwd}
+}
+
+testDownloadWithRemoteNameArg_Full()
+{
+  local_file=${OUTPUT_DIR}/force-wsc-23.0.0.jar
+  
+  pwd="$(pwd)"
+  cd ${OUTPUT_DIR}
+  successfulCaching "--silent --remote-name ${url}" "${local_file}"
+  cd ${pwd}
+}
+
 testNoArgs()
 {
   capture ${BUILDPACK_TEST_RUNNER_HOME}/lib/magic_curl/bin/curl
