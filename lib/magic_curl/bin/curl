@@ -39,4 +39,4 @@ fi
 # Use the real curl cmd to read from the local cache
 remote_name_arg=$(echo "$@" | grep -o -E -e "${remote_name_arg_pattern}")
 output_arg=$(echo "$@" | grep -o -E -e "${output_arg_pattern}")
-exec ${real_curl} --silent ${remote_name_arg} ${output_arg} file:///${local_path}
+exec ${real_curl} --silent ${remote_name_arg} ${output_arg} file://${local_path}

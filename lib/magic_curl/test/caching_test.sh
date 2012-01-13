@@ -29,13 +29,13 @@ testDownloadToStdOut()
   successfulCaching "--silent ${url} --compressed" "${STD_OUT}"
 }
 
-testDownloadWithOutputArg()
+testDownloadWithOutputArg_Full()
 {
   local_file=${OUTPUT_DIR}/file.output
   successfulCaching "--silent ${url} --output ${local_file}" "${local_file}"
 }
 
-testDownloadWithAbbrivatedOutputArg()
+testDownloadWithOutputArg_Short()
 {
   local_file=${OUTPUT_DIR}/file.output
   successfulCaching "--silent ${url} -o ${local_file}" "${local_file}"
@@ -44,7 +44,17 @@ testDownloadWithAbbrivatedOutputArg()
 testDownloadWithOutputArgFollowedByOtherArgs()
 {
   local_file=${OUTPUT_DIR}/file.output
-  successfulCaching "--silent ${url} --output ${local_file}" "${local_file} --compressed"
+  successfulCaching "--silent ${url} --output ${local_file} --compressed" "${local_file}"
+}
+
+testDownloadWithRemoteNameArg_Full()
+{
+  local_file=${OUTPUT_DIR}/force-wsc-23.0.0.jar
+  
+  pwd="$(pwd)"
+  cd ${OUTPUT_DIR}
+  successfulCaching "--silent --remote-name ${url}" "${local_file}"
+  cd ${pwd}
 }
 
 testDownloadWithRemoteNameArg_Short()
@@ -57,13 +67,13 @@ testDownloadWithRemoteNameArg_Short()
   cd ${pwd}
 }
 
-testDownloadWithRemoteNameArg_Full()
+testDownloadWithRemoteNameArgFollowedByOtherArgs()
 {
   local_file=${OUTPUT_DIR}/force-wsc-23.0.0.jar
   
   pwd="$(pwd)"
   cd ${OUTPUT_DIR}
-  successfulCaching "--silent --remote-name ${url}" "${local_file}"
+  successfulCaching "--silent ${url}  --remote-name --compressed" "${local_file}"
   cd ${pwd}
 }
 

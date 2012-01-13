@@ -30,6 +30,8 @@ tearDown()
 capture()
 {
   resetCapture
+  
+  LAST_COMMAND="$@"
 
   $@ >${STD_OUT} 2>${STD_ERR}
   RETURN=$?
@@ -46,6 +48,7 @@ resetCapture()
     rm ${STD_ERR}
   fi
 
+  unset LAST_COMMAND
   unset RETURN
   unset rtrn # deprecated
 }
