@@ -23,6 +23,9 @@ Once you have shUnit2, set an `SHUNIT_HOME` environment variable to the root of 
 
     export SHUNIT_HOME=/usr/local/bin/shunit/source/2.1
 
+> Note: for sed to work, you should be running the GNU version of sed. e.g. on Mac, you need to `brew install gnu-sed` and
+> then update /usr/bin/sed to point to /usr/local/Cellar/gnu-sed/4.2.1//bin/gsed.
+
 Usage
 -----
 To run the tests for one or more buildpacks, execute:
