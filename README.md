@@ -87,6 +87,12 @@ Note, the cache will only live for the life of the dyno (i.e. one test run).
 
     herouk run tests-with-caching
 
+When running tests on a dyno, the exit code is not returned correctly to the
+local shell. To workaround this limitation, pipe the output to the `report` script,
+which will parse the output and return the correct exit code. For example:
+
+    heroku run tests | bin/report
+
 
 Writing Unit Tests for a Buildpack
 ----------------------------------
