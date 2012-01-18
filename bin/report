@@ -1,0 +1,10 @@
+#!/bin/sh
+
+
+exitCode=1
+IFS=""
+while read line; do
+  echo "${line}"
+  echo "${line}" | grep -q "^ALL OK" && exitCode=0
+done
+exit ${exitCode}
