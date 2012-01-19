@@ -2,6 +2,14 @@
 
 export BUILDPACK_TEST_RUNNER_HOME=$(cd $(dirname $0); cd ..; pwd)
 
+indent() {
+  c='s/^/  /'
+  case $(uname) in
+    Darwin) sed    "$c";;
+    *)      sed -u "$c";;
+  esac
+}
+
 max()
 {
   if [ $1 -gt $2 ]; then
@@ -59,7 +67,7 @@ for bp in ${@}; do
     suite_start_time="$(date +%s)"
 
     echo "  TEST SUITE: ${f}"
-    ${SHUNIT_HOME?"'SHUNIT_HOME' environment variable must be set"}/src/shunit2 ${f} | sed -u 's/^/  /'
+    ${SHUNIT_HOME?"'SHUNIT_HOME' environment variable must be set"}/src/shunit2 ${f} | indent
     exit_code=$(max ${exit_code} ${PIPESTATUS[0]})
 
     suite_end_time="$(date +%s)"
