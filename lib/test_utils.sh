@@ -75,6 +75,26 @@ assertCapturedSuccess()
   assertEquals "Expected STD_ERR to be empty; was <$(cat ${STD_ERR})>" "" "$(cat ${STD_ERR})"
 }
 
+# assertCapturedError [[expectedErrorCode] expectedErrorMsg]
+assertCapturedError()
+{
+  if [ $# -gt 1 ]; then
+    expectedErrorCode=${1}
+    shift
+  fi
+
+  expectedErrorMsg=${1:-""}
+
+  if [ -z ${expectedErrorCode} ]; then
+    assertTrue "Expected captured exit code to be greater than 0; was <${RETURN}>" "[ ${RETURN} -gt 0 ]"
+  else
+    assertTrue "Expected captured exit code to be <${expectedErrorCode}>; was <${RETURN}>" "[ ${RETURN} -eq ${expectedErrorCode} ]"
+  fi
+
+  assertFileContains "Expected STD_OUT to contain error <${expectedErrorMsg}>" "${expectedErrorMsg}" "${STD_OUT}"
+  assertEquals       "STD_ERR should always be empty" "" "$(cat ${STD_ERR})"
+}
+
 assertAppDetected()
 {
   expectedAppType=${1?"Must provide app type"}
