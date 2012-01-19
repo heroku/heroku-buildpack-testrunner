@@ -1,0 +1,16 @@
+#!/bin/sh
+
+if [ -t 0 ]; then
+  echo "Usage: Pipe in the output of the testrunner to report the correct exit code. This is helpful when running tests on a Heroku dyno so the correct exit code is returned to the local shell."
+  echo "Example: heroku run tests | report"
+  exit 1;
+fi
+
+# assume failure until we find ALL OK
+exitCode=1
+IFS=""
+while read line; do
+  echo "${line}"
+  echo "${line}" | grep -q "^ALL OK" && exitCode=0
+done
+exit ${exitCode}
