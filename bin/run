@@ -5,7 +5,7 @@ export BUILDPACK_TEST_RUNNER_HOME=$(cd $(dirname $0); cd ..; pwd)
 indent() {
   c='s/^/  /'
   case $(uname) in
-    Darwin) sed -l "$c";;
+    Darwin) sed    "$c";;
     *)      sed -u "$c";;
   esac
 }
