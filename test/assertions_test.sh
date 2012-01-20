@@ -8,7 +8,13 @@ testAssertCaptured()
   assertCaptured "hello"
 }
 
-testAssertContains_Beginning()
+ttestAssertNotCaptured()
+{
+  ( capture echo "hello world" )
+  assertNotCaptured "foo bar"
+}
+
+estAssertContains_Beginning()
 {
   assertContains "zoo" "zookeeper"
 }

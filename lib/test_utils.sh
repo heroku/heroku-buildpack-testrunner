@@ -73,6 +73,11 @@ assertCaptured()
   assertFileContains "$@" "${STD_OUT}"
 }
 
+assertNotCaptured()
+{
+  assertFileNotContains "$@" "${STD_OUT}"
+}
+
 assertCapturedSuccess()
 {
   assertEquals "Expected captured exit code to be 0; was <${RETURN}>" "0" "${RETURN}"
