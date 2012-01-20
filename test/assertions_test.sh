@@ -8,7 +8,7 @@ testAssertCaptured()
   assertCaptured "hello"
 }
 
-ttestAssertNotCaptured()
+testAssertNotCaptured()
 {
   ( capture echo "hello world" )
   assertNotCaptured "foo bar"
