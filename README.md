@@ -120,24 +120,49 @@ If you are using `test_util.sh`, at the beginning of each test case, you will be
 directories for use with buildpack scripts. These directories are deleted after each test case completes. You will also be provided a
 `${BUILDPACK_HOME}` value to deterministically find the root of your buildpack.
 
-When running buildpack scripts, it is recommended to use the `capture` command to capture the stdout, stderr, and return value of the script.
-Just place the `capture` command before to your statement, and you can then access the `${STD_OUT}` file, `${STD_ERR}` file, and `${RETURN}` value
-after it completes. For example, to run the `compile` script and capture all its output:
+When running buildpack scripts, it is recommended to use the `detect`, `compile`, and `release` functions from `test_utils.sh`, which will
+provide the correct parameters and capture the stdout, stderr, and return values of the scripts. If you need to manually capture a command, 
+the `capture` function is also available to you by just calling `capture` before your command, but use the pre-defined functions whenever possible.
+Either way you capture, you will then have access to the `${STD_OUT}` file, `${STD_ERR}` file, and `${RETURN}` value after the capture completes. 
+To inspect these files and values, there are a few helpful assertions:
+
+ - `assertCapturedSuccess`: captured command exited with 0 and stderr is empty
+ - `assertCapturedError [[expectedErrorCode] expectedValue]`: captured command exited with non-0 value (or optional specified error code), stderr is empty, and stdout contains expected value 
+ - `assertCaptured [[assertionMessage] expectedValue]`: captured stdout contains an expected value
+ - `assertNotCaptured [[assertionMessage] expectedValue]`: captured stdout does not contain an expected value
+ - `assertNotCaptured [[assertionMessage] expectedValue]`: captured stdout does not contain an expected value
+ - `assertAppDetected appName`: stdout only contains app name
+ - `assertNoAppDetected`: stdout only contains "no"
+
+
+For example, to test that `compile` completes successfully and contains something in the logs:
+
+    compile
+    assertCapturedSuccess
+    assertCaptured "A string that should be in the output"
+
+An example of asserting an error:
+
+    compile
+    assertCapturedError "An error message we're expecting"
+
+Manually capturing is also available, which can be helpful when debugging tests, but is generally not needed. Use the assertions above whenever possible:
 
     capture ${BUILDPACK_HOME}/bin/compile ${BUILD_DIR} ${CACHE_DIR} 
 
-You can then assert its behavior by reading the captured output:
+Manually asserting on the raw captured values is also available, but is generally not needed. Use the assertions above whenever possible:
   
     assertEquals 0 "${RETURN}"
     assertContains "expected output" "$(cat ${STD_OUT})"
     assertEquals "" "$(cat ${STD_ERR})"
 
-All captured data is cleared betweeen test cases, but in case you need to capture two different commands in one test case, run the `resetCapture` command; 
-however, if you find yourself doing this too much, consider making your test cases more granular. Rememeber you can use the `-c` flag locally to cache 
-downloads, which can signifigantly increase the speed of tests that make heavy use of `curl`.
+All captured data is cleared betweeen test cases and before every `capture`. 
 
-If you are downloading files in tests, it is highly recommended to use `assertFileMD5 expectedHash filename` to make sure you actually downloaded the correct file.
-This assertion is more portable between platforms rather than computing the MD5 yourself.
+If you are downloading files in tests, it is highly recommended to use 
+
+    assertFileMD5 expectedHash filename 
+
+to make sure you actually downloaded the correct file. This assertion is more portable between platforms rather than computing the MD5 yourself.
 
 Metatesting
 -----------
