@@ -2,6 +2,12 @@
 
 . ${BUILDPACK_TEST_RUNNER_HOME}/lib/test_utils.sh
 
+testAssertCaptured()
+{
+  ( capture echo "hello world" )
+  assertCaptured "hello"
+}
+
 testAssertContains_Beginning()
 {
   assertContains "zoo" "zookeeper"
