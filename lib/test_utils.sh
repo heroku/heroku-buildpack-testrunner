@@ -68,6 +68,11 @@ release()
   capture ${BUILDPACK_HOME}/bin/release ${BUILD_DIR}
 }
 
+assertCapturedExactly()
+{
+  assertEquals "$@" "$(cat ${STD_OUT})"
+}
+
 assertCaptured()
 {
   assertFileContains "$@" "${STD_OUT}"
