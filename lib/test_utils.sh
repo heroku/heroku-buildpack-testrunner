@@ -73,6 +73,11 @@ assertCapturedEquals()
   assertEquals "$@" "$(cat ${STD_OUT})"
 }
 
+assertCapturedNotEquals()
+{
+  assertNotEquals "$@" "$(cat ${STD_OUT})"
+}
+
 assertCaptured()
 {
   assertFileContains "$@" "${STD_OUT}"

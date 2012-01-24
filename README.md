@@ -30,10 +30,11 @@ Usage
 -----
 To run the tests for one or more buildpacks, execute:
 
-    bin/run [-c] buildpack_1 [buildpack_2 [...]]
+    bin/run [-c] [-s single_suite_test.sh] buildpack_1 [buildpack_2 [...]]
 
 where `buildpack_n` can either be a local directory or a remote Git repository ending in `.git`.
 Each buildpack must have a `test` directory and files matching the `*_test.sh` pattern to be run.
+The `-s` flag sets a single test suite to run in the `test` directories of the buildpacks.
 The `-c` flag enables persistent caching of files downloaded with cUrl. See `lib/magic_curl/README.md` for more info.
 
 For example, the following command:
@@ -130,7 +131,8 @@ To inspect these files and values, there are a few helpful assertions:
  - `assertCapturedError [[expectedErrorCode] expectedValue]`: captured command exited with non-0 value (or optional specified error code), stderr is empty, and stdout contains expected value 
  - `assertCaptured [[assertionMessage] expectedValue]`: captured stdout contains an expected value
  - `assertNotCaptured [[assertionMessage] expectedValue]`: captured stdout does not contain an expected value
- - `assertNotCaptured [[assertionMessage] expectedValue]`: captured stdout does not contain an expected value
+ - `assertCapturedEquals [[assertionMessage] expectedValue]`: captured stdout exactly equals the expected value
+ - `assertCapturedNotEquals [[assertionMessage] expectedValue]`: captured stdout does not exactly equals the expected value
  - `assertAppDetected appName`: stdout only contains app name
  - `assertNoAppDetected`: stdout only contains "no"
 

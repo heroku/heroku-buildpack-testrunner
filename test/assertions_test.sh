@@ -8,6 +8,12 @@ testAssertCapturedEquals()
   assertCapturedEquals "hello world"
 }
 
+testAssertCapturedNotEquals()
+{
+  ( capture echo "hello world" )
+  assertCapturedNotEquals "world"
+}
+
 testAssertCaptured()
 {
   ( capture echo "hello world" )

@@ -22,10 +22,11 @@ if [ 0 -eq $# ]; then
   cat <<EOF
 Buildpack Test Runner
 
-Usage: run [-c] buildpack_1 [buildpack_2 [...]]
+Usage: run [-c] [-s single_suite_test.sh] buildpack_1 [buildpack_2 [...]]
 
          -c   enable cUrl caching
-buildpack_n  local directory or a remote Git repository ending in .git for buildpack
+         -s   specify a single test suite to run in each buildpack's test directory
+buildpack_n   local directory or a remote Git repository ending in .git for buildpack
 EOF
   exit 1
 fi
