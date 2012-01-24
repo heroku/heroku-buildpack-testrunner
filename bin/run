@@ -35,6 +35,18 @@ if [ "${1}" = "-c" ]; then
   export PATH=${BUILDPACK_TEST_RUNNER_HOME}/lib/magic_curl/bin:${PATH}
 fi
 
+if [ "${1}" = "-s" ]; then
+  shift
+  
+  singleTest=${1}
+  shift
+
+  if [ -z "${singleTest}" ] || [ -d "${singleTest}" ]; then
+    echo "Invalid single test argument" 2>/dev/null
+    exit 1
+  fi
+fi  
+
 all_start_time="$(date +%s)"
 exit_code=0
 for bp in ${@}; do
@@ -47,7 +59,7 @@ for bp in ${@}; do
     git clone ${bp} ${tmp_repo}
     bp=${tmp_repo}
   fi
-    
+   
   if [ ! -d ${bp} ]; then
     echo "ERROR: '${bp}' is not a directory" >&2
     exit_code=$(max ${exit_code} 1)
@@ -63,6 +75,10 @@ for bp in ${@}; do
   export BUILDPACK_HOME=${bp}
 
   for f in ${BUILDPACK_HOME}/test/*_test.sh; do
+    if [ -n "${singleTest}" ] && [ ${BUILDPACK_HOME}/test/${singleTest} != ${f} ]; then
+      continue
+    fi
+
     suite_start_time="$(date +%s)"
 
     echo "  TEST SUITE: ${f}"
