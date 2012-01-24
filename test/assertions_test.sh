@@ -2,6 +2,12 @@
 
 . ${BUILDPACK_TEST_RUNNER_HOME}/lib/test_utils.sh
 
+testAssertCapturedEquals()
+{
+  ( capture echo "hello world" )
+  assertCapturedEquals "hello world"
+}
+
 testAssertCaptured()
 {
   ( capture echo "hello world" )
