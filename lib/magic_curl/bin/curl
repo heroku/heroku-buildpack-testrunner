@@ -35,5 +35,5 @@ if [ ! -f ${local_path} ]; then
 fi
 
 # Use the real curl cmd to read from the local cache
-user_params=$(echo "$@" | sed -r "s/[ ]+https?:\/\/[^ ]+//")
+user_params=$(echo "$@" | sed "s/[ ]*[a-z]*:\/\/[^ ][^ ]*//")
 exec ${real_curl} --silent ${user_params} file://${local_path}
