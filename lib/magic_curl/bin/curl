@@ -28,11 +28,9 @@ if [ -z ${rel_path} ]; then
 fi 
 
 # Write to the cache using the real curl cmd with the supplied arguments
-output_arg_pattern="[ ]*(-o|--output)[ ]+[^ ]+"
-remote_name_arg_pattern="(-O|--remote-name)"
 if [ ! -f ${local_path} ]; then
   mkdir -p $(dirname ${local_path})
-  load_cache_args=$(echo "$@" | sed -r "s/${output_arg_pattern}//g" | sed -r "s/${remote_name_arg_pattern}//g")
+  load_cache_args=$(echo "$@" | sed "s/[ ][ ]*-o[ ][ ]*[^ ][^ ]*//g" | sed "s/[ ][ ]*--output[ ][ ]*[^ ][^ ]*//g" | sed "s/-O//g" | sed "s/--remote-name//g")
   ${real_curl} ${load_cache_args} > ${local_path}
 fi
 
