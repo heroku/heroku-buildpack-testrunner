@@ -15,7 +15,7 @@ done
 for arg; do
   echo "${arg}" | grep -q -E "^https?://"
   if [ 0 -eq $? ]; then
-    rel_path=$(echo ${arg} | sed -r "s/^https?:\/\/(.*)/\1/")
+    rel_path=$(echo ${arg} | sed "s/^.*:\/\/\(.*\)/\1/")
     local_path="${cache_dir}/${rel_path}"
     break
   fi
