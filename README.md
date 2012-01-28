@@ -23,9 +23,6 @@ Once you have shUnit2, set an `SHUNIT_HOME` environment variable to the root of 
 
     export SHUNIT_HOME=/usr/local/bin/shunit/source/2.1
 
-> Note: for sed to work, you should be running the GNU version of sed. e.g. on Mac, you need to `brew install gnu-sed` and
-> then update /usr/bin/sed to point to /usr/local/Cellar/gnu-sed/4.2.1//bin/gsed.
-
 Usage
 -----
 To run the tests for one or more buildpacks, execute:
@@ -52,7 +49,7 @@ This can be very helpful for testing your buildpack on a real Heroku dyno before
 To do this, create a Cedar app out of your buildpack and set the testrunner as its buildpack:
 
     $ cd your_buildpack_dir
-    $ heroku create --stack cedar --buildpack git@git.herokai.com:heroku-buildpack-testrunner.git
+    $ heroku create --stack cedar --buildpack git@github.com:heroku/heroku-buildpack-testrunner.git
    
     Creating deep-thought-1234... done, stack is cedar
     http://deep-thought-1234.herokuapp.com/ | git@heroku.com:deep-thought-1234.git
@@ -100,7 +97,9 @@ which will parse the output and return the correct exit code. For example:
 
 Writing Unit Tests for a Buildpack
 ----------------------------------
-Writing tests for a buildpack is similar to any other xUnit framework, but the steps below summarize what you need to get started testing a buildpack:
+Writing tests for a buildpack is similar to any other xUnit framework, but the steps below summarize what you need to get started testing a buildpack.
+In addition, to the steps below, its advised to familarize yourself with the [shUnit2 documentation](http://shunit2.googlecode.com/svn/trunk/source/2.1/doc/shunit2.txt)
+before starting.
 
 1. Create a `test` directory in the root of the buildpack.
 
@@ -165,6 +164,8 @@ If you are downloading files in tests, it is highly recommended to use
     assertFileMD5 expectedHash filename 
 
 to make sure you actually downloaded the correct file. This assertion is more portable between platforms rather than computing the MD5 yourself.
+
+In addition, please see the [shUnit2 documentation](http://shunit2.googlecode.com/svn/trunk/source/2.1/doc/shunit2.txt) for information on additional asssertions available.
 
 Metatesting
 -----------
