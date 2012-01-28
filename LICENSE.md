@@ -11,7 +11,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 ---
 
-This software depends on :
-> [shUnit2](http://code.google.com/p/shunit2/)
+This software depends on:
+
+> [shUnit2](http://code.google.com/p/shunit2/).
 > Copyright 2008 Kate Ward. All Rights Reserved.
-> Released under the LGPL (GNU Lesser General Public License)
+> Released under the LGPL (GNU Lesser General Public License).
