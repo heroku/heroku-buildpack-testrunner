@@ -73,7 +73,16 @@ for bp in ${@}; do
     continue
   fi
 
-  export BUILDPACK_HOME=${bp}
+  # copy the buildpack into a temp dir to avoid clobbering the original if its self distructive
+  # hard code string 'bp' to avoid weirdness with self refernces and hidden files
+  bp_mirror="$(mktemp -d /tmp/bp_mirror.XXXX)"
+  cp -r ${bp} ${bp_mirror}/bp
+  export BUILDPACK_HOME=${bp_mirror}/bp
+  
+  # create a virtual working directory from which to run the tests to avoid happenstance local references
+  real_working_dir=$PWD
+  virtual_working_dir="$(mktemp -d /tmp/virtual_working_dir.XXXX)"
+  cd ${virtual_working_dir}
 
   for f in ${BUILDPACK_HOME}/test/*_test.sh; do
     if [ -n "${singleTest}" ] && [ ${BUILDPACK_HOME}/test/${singleTest} != ${f} ]; then
@@ -82,7 +91,7 @@ for bp in ${@}; do
 
     suite_start_time="$(date +%s)"
 
-    echo "  TEST SUITE: ${f}"
+    echo "  TEST SUITE: $(basename ${f})"
     ${SHUNIT_HOME?"'SHUNIT_HOME' environment variable must be set"}/src/shunit2 ${f} | indent
     exit_code=$(max ${exit_code} ${PIPESTATUS[0]})
 
@@ -93,6 +102,11 @@ for bp in ${@}; do
   bp_end_time="$(date +%s)"
   bp_elapsed_time="$(expr ${bp_end_time} - ${bp_start_time})"
   echo "${bp_elapsed_time} SECONDS"
+
+  rm -rf ${bp_mirror}
+
+  cd $real_working_dir
+  rm -rf ${virtual_working_dir}
 
   if [ -d ${tmp_repo} ]; then
     rm -rf ${tmp_repo}
@@ -112,3 +126,4 @@ echo "${all_elapsed_time} SECONDS"
 
 
 exit ${exit_code}
+

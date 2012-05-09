@@ -36,7 +36,7 @@ The `-c` flag enables persistent caching of files downloaded with cUrl. See `lib
 
 For example, the following command:
 
-    bin/run ~/a_local_buildpack git@github.com:rbrainard/heroku-buildpack-gradle.git
+    bin/run ~/a_local_buildpack git@github.com:ryanbrainard/heroku-buildpack-gradle.git
 
 Would first run the tests in the buildpack at `~/a_local_buildpack` and then clone the
 Git repository at `git@github.com:rbrainard/heroku-buildpack-gradle.git` into a temp
