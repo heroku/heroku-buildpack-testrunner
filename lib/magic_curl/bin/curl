@@ -17,6 +17,7 @@ for arg; do
   if [ 0 -eq $? ]; then
     rel_path=$(echo ${arg} | sed "s/^.*:\/\/\(.*\)/\1/")
     local_path="${cache_dir}/${rel_path}"
+    local_path_no_cache="${cache_dir}/NO_CACHE/${rel_path}"
     break
   fi
 done
@@ -32,6 +33,16 @@ if [ ! -f ${local_path} ]; then
   mkdir -p $(dirname ${local_path})
   load_cache_args=$(echo "$@" | sed "s/[ ][ ]*-o[ ][ ]*[^ ][^ ]*//g" | sed "s/[ ][ ]*--output[ ][ ]*[^ ][^ ]*//g" | sed "s/-O//g" | sed "s/--remote-name//g")
   ${real_curl} ${load_cache_args} > ${local_path}
+  if [ $? != 0 ]; then
+    rm ${local_path}
+    mkdir -p $(dirname ${local_path_no_cache})
+    touch ${local_path_no_cache}
+  fi
+fi
+
+# if not cachable, run curl directly
+if [ -f ${local_path_no_cache} ]; then
+  exec ${real_curl} $@
 fi
 
 # Use the real curl cmd to read from the local cache

@@ -94,3 +94,13 @@ testNoUrl()
   assertContains "curl: no URL specified!" "$(cat ${STD_ERR})"
   assertEquals "2" "${rtrn}"
 }
+
+test403WithFail()
+{
+  capture ${BUILDPACK_TEST_RUNNER_HOME}/lib/magic_curl/bin/curl http://s3.amazonaws.com/heroku-jvm-langpack-scala/sbt-xxxx.boot.properties --fail   
+  
+  assertEquals "" "$(cat ${STD_OUT})"
+  assertContains "curl: (22) The requested URL returned error: 403" "$(cat ${STD_ERR})"
+  assertEquals "22" "${rtrn}"
+}
+
