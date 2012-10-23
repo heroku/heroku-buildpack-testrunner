@@ -10,7 +10,7 @@ Setup
 -----
 To use the testrunner locally, first clone this repository:
 
-    git clone git@github.com:heroku/heroku-buildpack-testrunner.git
+    git clone git://github.com/ryanbrainard/heroku-buildpack-testrunner.git
 
 If you do not already have shUnit2 installed, either [download](http://code.google.com/p/shunit2/downloads/list)
 it or checkout it out from SVN:
@@ -49,7 +49,7 @@ This can be very helpful for testing your buildpack on a real Heroku dyno before
 To do this, create a Cedar app out of your buildpack and set the testrunner as its buildpack:
 
     $ cd your_buildpack_dir
-    $ heroku create --stack cedar --buildpack git@github.com:ryanbrainard/heroku-buildpack-testrunner.git
+    $ heroku create --stack cedar --buildpack git://github.com/ryanbrainard/heroku-buildpack-testrunner.git
    
     Creating deep-thought-1234... done, stack is cedar
     http://deep-thought-1234.herokuapp.com/ | git@heroku.com:deep-thought-1234.git
