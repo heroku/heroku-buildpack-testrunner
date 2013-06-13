@@ -1,3 +1,7 @@
+DEPRECATED
+==========
+Use [ryanbrainard/heroku-buildpack-testrunner](https://github.com/heroku/heroku-buildpack-testrunner)
+
 Buildpack Testrunner
 =====================
 A simple unit testing framework for testing buildpacks based on [shUnit2](http://code.google.com/p/shunit2/).
