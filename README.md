@@ -1,6 +1,6 @@
 DEPRECATED
 ==========
-Use [ryanbrainard/heroku-buildpack-testrunner](https://github.com/heroku/heroku-buildpack-testrunner)
+Use [ryanbrainard/heroku-buildpack-testrunner](https://github.com/ryanbrainard/heroku-buildpack-testrunner)
 
 Buildpack Testrunner
 =====================
