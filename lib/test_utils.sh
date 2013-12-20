@@ -10,21 +10,48 @@ oneTimeTearDown()
   rm -rf ${TEST_SUITE_CACHE}
 }
 
+# override these hooks in test files
+beforeSetUp()
+{
+  :
+}
+
+afterSetUp()
+{
+  :
+}
+
+beforeTearDown()
+{
+  :
+}
+
+afterTearDown()
+{
+  :
+}
+
 setUp()
 {
+  beforeSetUp
   OUTPUT_DIR="$(mktemp -d ${SHUNIT_TMPDIR}/output.XXXX)"
   STD_OUT="${OUTPUT_DIR}/stdout"
   STD_ERR="${OUTPUT_DIR}/stderr"
   BUILD_DIR="${OUTPUT_DIR}/build"
   CACHE_DIR="${OUTPUT_DIR}/cache"
+  ENV_FILE="${OUTPUT_DIR}/.env"
   mkdir -p ${OUTPUT_DIR}
   mkdir -p ${BUILD_DIR}
   mkdir -p ${CACHE_DIR}
+  touch ${ENV_FILE}
+  afterSetUp
 }
 
 tearDown()
 {
+  beforeTearDown
   rm -rf ${OUTPUT_DIR}
+  afterTearDown
 }
 
 capture()
@@ -60,7 +87,7 @@ detect()
 
 compile()
 {
-  capture ${BUILDPACK_HOME}/bin/compile ${BUILD_DIR} ${CACHE_DIR}
+  capture ${BUILDPACK_HOME}/bin/compile ${BUILD_DIR} ${CACHE_DIR} ${ENV_FILE}
 }
 
 release()
