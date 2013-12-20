@@ -1,20 +1,20 @@
 DEPRECATED
 ==========
-Use [ryanbrainard/heroku-buildpack-testrunner](https://github.com/ryanbrainard/heroku-buildpack-testrunner)
+Use [heroku/heroku-buildpack-testrunner](https://github.com/heroku/heroku-buildpack-testrunner)
 
 Buildpack Testrunner
 =====================
 A simple unit testing framework for testing buildpacks based on [shUnit2](http://code.google.com/p/shunit2/).
-It provides utilities for loading buildpacks and capturing and asserting their behavior. 
+It provides utilities for loading buildpacks and capturing and asserting their behavior.
 It can be run locally, part of a continuous integration system, or even directly on Heroku as a buildpack itself.
-To run the testrunner locally, see the Setup and Usage sections. 
+To run the testrunner locally, see the Setup and Usage sections.
 To run on Heroku, see the Running Buildpack Tests on Heroku section.
 
 Setup
 -----
 To use the testrunner locally, first clone this repository:
 
-    git clone git://github.com/ryanbrainard/heroku-buildpack-testrunner.git
+    git clone git://github.com/heroku/heroku-buildpack-testrunner.git
 
 If you do not already have shUnit2 installed, either [download](http://code.google.com/p/shunit2/downloads/list)
 it or checkout it out from SVN:
@@ -40,7 +40,7 @@ The `-c` flag enables persistent caching of files downloaded with cUrl. See `lib
 
 For example, the following command:
 
-    bin/run ~/a_local_buildpack git@github.com:ryanbrainard/heroku-buildpack-gradle.git
+    bin/run ~/a_local_buildpack git@github.com:heroku/heroku-buildpack-gradle.git
 
 Would first run the tests in the buildpack at `~/a_local_buildpack` and then clone the
 Git repository at `git@github.com:rbrainard/heroku-buildpack-gradle.git` into a temp
@@ -53,8 +53,8 @@ This can be very helpful for testing your buildpack on a real Heroku dyno before
 To do this, create a Cedar app out of your buildpack and set the testrunner as its buildpack:
 
     $ cd your_buildpack_dir
-    $ heroku create --stack cedar --buildpack git://github.com/ryanbrainard/heroku-buildpack-testrunner.git
-   
+    $ heroku create --stack cedar --buildpack git://github.com/heroku/heroku-buildpack-testrunner.git
+
     Creating deep-thought-1234... done, stack is cedar
     http://deep-thought-1234.herokuapp.com/ | git@heroku.com:deep-thought-1234.git
     Git remote heroku added
@@ -63,7 +63,7 @@ Once the testrunner is set as your buildpack's buildpack, push it to Heroku.
 This will automatically download and install shUnit2 and create a `tests` process for you:
 
     $ git push heroku master
-    
+
     Counting objects: 425, done.
     Delta compression using up to 8 threads.
     Compressing objects: 100% (271/271), done.
@@ -107,31 +107,31 @@ before starting.
 
 1. Create a `test` directory in the root of the buildpack.
 
-2. Create test scripts in the `test` directory ending in `_test.sh`. 
-They can be grouped any way you like, but creating a test script for each buildpack script is recommended. 
+2. Create test scripts in the `test` directory ending in `_test.sh`.
+They can be grouped any way you like, but creating a test script for each buildpack script is recommended.
 For example the `detect` script should have a corresponding `detect_test.sh` test script.
 
 3. It is recommended (but not required) to source in the `test_utils.sh` script at the beginning of your test script.
 This contains common functions for setup, teardown, and asserting buildpack behavior.
- 
+
     . ${BUILDPACK_TEST_RUNNER_HOME}/lib/test_utils.sh
 
-4. Each test case in the script should be contained a function starting with `test`. 
+4. Each test case in the script should be contained a function starting with `test`.
 Like testing with other xUnit frameworks, the test cases should be fairly granular
-and try not to depend on outside factors or upon each other. 
+and try not to depend on outside factors or upon each other.
 
 If you are using `test_util.sh`, at the beginning of each test case, you will be provided empty `${BUILD_DIR}` and `${CACHE_DIR}`
 directories for use with buildpack scripts. These directories are deleted after each test case completes. You will also be provided a
 `${BUILDPACK_HOME}` value to deterministically find the root of your buildpack.
 
 When running buildpack scripts, it is recommended to use the `detect`, `compile`, and `release` functions from `test_utils.sh`, which will
-provide the correct parameters and capture the stdout, stderr, and return values of the scripts. If you need to manually capture a command, 
+provide the correct parameters and capture the stdout, stderr, and return values of the scripts. If you need to manually capture a command,
 the `capture` function is also available to you by just calling `capture` before your command, but use the pre-defined functions whenever possible.
-Either way you capture, you will then have access to the `${STD_OUT}` file, `${STD_ERR}` file, and `${RETURN}` value after the capture completes. 
+Either way you capture, you will then have access to the `${STD_OUT}` file, `${STD_ERR}` file, and `${RETURN}` value after the capture completes.
 To inspect these files and values, there are a few helpful assertions:
 
  - `assertCapturedSuccess`: captured command exited with 0 and stderr is empty
- - `assertCapturedError [[expectedErrorCode] expectedValue]`: captured command exited with non-0 value (or optional specified error code), stderr is empty, and stdout contains expected value 
+ - `assertCapturedError [[expectedErrorCode] expectedValue]`: captured command exited with non-0 value (or optional specified error code), stderr is empty, and stdout contains expected value
  - `assertCaptured [[assertionMessage] expectedValue]`: captured stdout contains an expected value
  - `assertNotCaptured [[assertionMessage] expectedValue]`: captured stdout does not contain an expected value
  - `assertCapturedEquals [[assertionMessage] expectedValue]`: captured stdout exactly equals the expected value
@@ -153,19 +153,19 @@ An example of asserting an error:
 
 Manually capturing is also available, which can be helpful when debugging tests, but is generally not needed. Use the assertions above whenever possible:
 
-    capture ${BUILDPACK_HOME}/bin/compile ${BUILD_DIR} ${CACHE_DIR} 
+    capture ${BUILDPACK_HOME}/bin/compile ${BUILD_DIR} ${CACHE_DIR}
 
 Manually asserting on the raw captured values is also available, but is generally not needed. Use the assertions above whenever possible:
-  
+
     assertEquals 0 "${RETURN}"
     assertContains "expected output" "$(cat ${STD_OUT})"
     assertEquals "" "$(cat ${STD_ERR})"
 
-All captured data is cleared betweeen test cases and before every `capture`. 
+All captured data is cleared betweeen test cases and before every `capture`.
 
-If you are downloading files in tests, it is highly recommended to use 
+If you are downloading files in tests, it is highly recommended to use
 
-    assertFileMD5 expectedHash filename 
+    assertFileMD5 expectedHash filename
 
 to make sure you actually downloaded the correct file. This assertion is more portable between platforms rather than computing the MD5 yourself.
 
@@ -179,7 +179,7 @@ The tests for the testrunner itself work just like any other buildpack. To test 
 
 This can be helpful to make sure all the testrunner libraries work on your platform before testing any real buildpacks.
 
-One caveat about negative tests for assertions is that they need to be captured and wrapped in paraenthesis to supress 
+One caveat about negative tests for assertions is that they need to be captured and wrapped in paraenthesis to supress
 the assertion failure from causing the metatest to fail. For example, if you want to test that `assertContains` prints out
 the proper failure message, capture, wrap, and then assert on the captured output.
 
