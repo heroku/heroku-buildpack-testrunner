@@ -59,7 +59,7 @@ real Heroku dyno before pushing it to a public repo. To do this, create a
 Cedar app out of your buildpack and set the testrunner as its buildpack:
 
     $ cd your_buildpack_dir
-    $ heroku create --stack cedar --buildpack git://github.com/heroku/heroku-buildpack-testrunner.git
+    $ heroku create --buildpack git://github.com/heroku/heroku-buildpack-testrunner.git
 
     Creating deep-thought-1234... done, stack is cedar
     http://deep-thought-1234.herokuapp.com/ | git@heroku.com:deep-thought-1234.git
