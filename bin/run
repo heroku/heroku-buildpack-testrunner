@@ -2,8 +2,7 @@
 
 export BUILDPACK_TEST_RUNNER_HOME=$(cd $(dirname $0); cd ..; pwd)
 
-max()
-{
+max() {
   if [ $1 -gt $2 ]; then
     echo $1
   else
@@ -11,8 +10,7 @@ max()
   fi
 }
 
-indent()
-{
+indent() {
   while read line; do
     echo "  ${line}"
   done
@@ -49,7 +47,7 @@ fi
 
 if [ "${1}" = "-s" ]; then
   shift
-  
+
   singleTest=${1}
   shift
 
@@ -57,7 +55,7 @@ if [ "${1}" = "-s" ]; then
     echo "Invalid single test argument" 2>/dev/null
     exit 1
   fi
-fi  
+fi
 
 all_start_time="$(date +%s)"
 exit_code=0
@@ -71,7 +69,7 @@ for bp in ${@}; do
     git clone ${bp} ${tmp_repo}
     bp=${tmp_repo}
   fi
-   
+
   if [ ! -d ${bp} ]; then
     echo "ERROR: '${bp}' is not a directory" >&2
     exit_code=$(max ${exit_code} 1)
@@ -89,7 +87,7 @@ for bp in ${@}; do
   bp_mirror="$(mktemp -d /tmp/bp_mirror.XXXX)"
   cp -r ${bp} ${bp_mirror}/bp
   export BUILDPACK_HOME=${bp_mirror}/bp
-  
+
   # create a virtual working directory from which to run the tests to avoid happenstance local references
   real_working_dir=$PWD
   virtual_working_dir="$(mktemp -d /tmp/virtual_working_dir.XXXX)"
