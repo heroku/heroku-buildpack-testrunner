@@ -5,18 +5,74 @@ A simple unit testing framework for testing buildpacks based on
 [shUnit2](http://code.google.com/p/shunit2/). It provides utilities for
 loading buildpacks and capturing and asserting their behavior. It can be run
 locally, as part of a continuous integration system, or even directly on Heroku
-as a buildpack itself. To run the testrunner locally, see the Setup and Usage
-sections below. To run on Heroku, see the Running Buildpack Tests on Heroku section.
+as a buildpack itself.
 
-Setup
------
+Running Buildpack Tests on Heroku
+---------------------------------
+
+The testrunner is itself a buildpack and can be used to run tests for your
+buildpack on Heroku. This can be very helpful for testing your buildpack on a
+real Heroku dyno before pushing it to a public repo. To do this, create a
+Cedar app out of your buildpack and set the testrunner as its buildpack:
+
+    cd your_buildpack_dir
+    heroku create --buildpack https://github.com/heroku/heroku-buildpack-testrunner
+
+    Creating deep-thought-1234... done, stack is cedar
+    http://deep-thought-1234.herokuapp.com/ | git@heroku.com:deep-thought-1234.git
+    Git remote heroku added
+
+Once the testrunner is set as your buildpack's buildpack, push it to Heroku.
+This will automatically download and install shUnit2 and create a `tests`
+process for you:
+
+    git push heroku master
+
+    Counting objects: 425, done.
+    Delta compression using up to 8 threads.
+    Compressing objects: 100% (271/271), done.
+    Writing objects: 100% (425/425), 48.08 KiB, done.
+    Total 425 (delta 126), reused 396 (delta 113)
+
+    -----> Heroku receiving push
+    -----> Fetching custom buildpack... done
+    -----> Buildpack Test app detected
+    -----> Downloading shunit2-2.1.6..... done
+    -----> Installing shunit2-2.1.6.... done
+    -----> Installing Buildpack Testrunner.... done
+    -----> Discovering process types
+       Procfile declares types          -> (none)
+       Default types for Buildpack Test -> tests
+    -----> Compiled slug size is 108K
+    -----> Launching... done, v5
+       http://deep-thought-1234.herokuapp.com deployed to Heroku
+
+Now, you can run your tests on Heroku in their own dyno:
+
+    heroku run tests
+
+If you would like caching to be enabled run `tests-with-caching` instead.
+Note, the cache will only live for the life of the dyno (i.e. one test run).
+
+    heroku run tests-with-caching
+
+When running tests on a dyno, the exit code is not returned correctly to the
+local shell. To workaround this limitation, pipe the output to the `report`
+script, which will parse the output and return the correct exit code. For
+example:
+
+    heroku run tests | bin/report
+
+
+Local Setup
+-----------
 
 To use the testrunner locally, first clone this repository:
 
     git clone https://github.com/heroku/heroku-buildpack-testrunner
 
 If you do not already have shUnit2 installed, either
-[download](http://code.google.com/p/shunit2/downloads/list) it or checkout it
+[download](http://code.google.com/p/shunit2/downloads/list) it or check it
 out from SVN:
 
     svn checkout http://shunit2.googlecode.com/svn/trunk/ shunit2
@@ -28,8 +84,8 @@ of the version you wish to use. For example:
 
     export SHUNIT_HOME=/usr/local/bin/shunit/source/2.1
 
-Usage
------
+Local Usage
+-----------
 
 To run the tests for one or more buildpacks, execute:
 
@@ -49,62 +105,6 @@ For example, the following command:
 Would first run the tests in the buildpack at `~/a_local_buildpack` and then
 clone the Git repository at `git@github.com:rbrainard/heroku-buildpack-
 gradle.git` into a temp directory and run the tests there too.
-
-Running Buildpack Tests on Heroku
----------------------------------
-
-The testrunner is itself a buildpack and can be used to run tests for your
-buildpack on Heroku. This can be very helpful for testing your buildpack on a
-real Heroku dyno before pushing it to a public repo. To do this, create a
-Cedar app out of your buildpack and set the testrunner as its buildpack:
-
-    $ cd your_buildpack_dir
-    $ heroku create --buildpack git://github.com/heroku/heroku-buildpack-testrunner.git
-
-    Creating deep-thought-1234... done, stack is cedar
-    http://deep-thought-1234.herokuapp.com/ | git@heroku.com:deep-thought-1234.git
-    Git remote heroku added
-
-Once the testrunner is set as your buildpack's buildpack, push it to Heroku.
-This will automatically download and install shUnit2 and create a `tests`
-process for you:
-
-    $ git push heroku master
-
-    Counting objects: 425, done.
-    Delta compression using up to 8 threads.
-    Compressing objects: 100% (271/271), done.
-    Writing objects: 100% (425/425), 48.08 KiB, done.
-    Total 425 (delta 126), reused 396 (delta 113)
-
-    -----> Heroku receiving push
-    -----> Fetching custom buildpack... done
-    -----> Buildpack Test app detected
-    -----> Downloading shunit2-2.1.6..... done
-    -----> Installing shunit2-2.1.6.... done
-    -----> Installing Buildpack Testrunner.... done
-    -----> Discovering process types
-	   Procfile declares types          -> (none)
-	   Default types for Buildpack Test -> tests
-    -----> Compiled slug size is 108K
-    -----> Launching... done, v5
-	   http://deep-thought-1234.herokuapp.com deployed to Heroku
-
-Now, you can run your tests on Heroku in their own dyno:
-
-    heroku run tests
-
-If you would like caching to be enabled run `tests-with-caching` instead.
-Note, the cache will only live for the life of the dyno (i.e. one test run).
-
-    herouk run tests-with-caching
-
-When running tests on a dyno, the exit code is not returned correctly to the
-local shell. To workaround this limitation, pipe the output to the `report`
-script, which will parse the output and return the correct exit code. For
-example:
-
-    heroku run tests | bin/report
 
 
 Writing Unit Tests for a Buildpack
