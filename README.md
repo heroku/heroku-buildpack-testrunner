@@ -106,6 +106,22 @@ Would first run the tests in the buildpack at `~/a_local_buildpack` and then
 clone the Git repository at `git@github.com:rbrainard/heroku-buildpack-
 gradle.git` into a temp directory and run the tests there too.
 
+Docker Usage
+------------
+
+The testrunner can be packaged into a Docker image that can be run by
+individual Buildpacks. To create the image, run `./build.sh` from the
+root directory of the project. 
+
+Then, run the following to test a Buildpack:
+
+```
+docker run -it -v /path/to/buildpack:/app/buildpack:ro heroku/testrunner 
+```
+
+On Mac OS X it is necessary to [customize boot2docker](https://medium.com/boot2docker-lightweight-linux-for-docker/boot2docker-together-with-virtualbox-guest-additions-da1e3ab2465c) 
+or use [docker-osx](https://github.com/noplay/docker-osx) in order for the `-v` option to work.
+
 
 Writing Unit Tests for a Buildpack
 ----------------------------------
