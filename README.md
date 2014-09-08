@@ -1,4 +1,4 @@
-Buildpack Testrunner
+Buildpack Testrunner [![Build Status](https://travis-ci.org/heroku/heroku-buildpack-testrunner.svg)](https://travis-ci.org/heroku/heroku-buildpack-testrunner)
 =====================
 
 A simple unit testing framework for testing buildpacks based on
