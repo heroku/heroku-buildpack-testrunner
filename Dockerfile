@@ -1,4 +1,4 @@
-FROM fabiokung/cedar
+FROM heroku/cedar-14
 
 WORKDIR /usr/local/lib
 
