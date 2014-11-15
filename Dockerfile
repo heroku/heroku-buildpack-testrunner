@@ -1,4 +1,4 @@
-FROM heroku/cedar-14
+FROM heroku/cedar:14
 
 WORKDIR /usr/local/lib
 

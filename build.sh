@@ -1,1 +1,3 @@
-docker build --rm -t heroku/testrunner .
+#!/bin/sh
+
+docker build -t heroku/testrunner .
