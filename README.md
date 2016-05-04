@@ -7,6 +7,17 @@ loading buildpacks and capturing and asserting their behavior. It can be run
 locally, as part of a continuous integration system, or even directly on Heroku
 as a buildpack itself.
 
+Requirements
+------------
+This buildpack requires that the following directories/files exist:
+
+```
+bin/detect
+bin/release
+bin/compile
+test/
+```
+
 Running Buildpack Tests on Heroku
 ---------------------------------
 
