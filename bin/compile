@@ -18,8 +18,8 @@ SHUNIT_HOME="${BUILD_DIR}/.shunit2"
 [ ! -d ${CACHE_DIR} ] && mkdir -p ${CACHE_DIR}
 
 # Download Shunit if not in cache
-if [ ! -f ${CACHE_DIR}/${SHUNIT_DIST_TAR} ]; then  
-  SHUNIT_URL="http://shunit2.googlecode.com/files/${SHUNIT_DIST_TAR}"
+if [ ! -f ${CACHE_DIR}/${SHUNIT_DIST_TAR} ]; then
+  SHUNIT_URL="https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/shunit2/${SHUNIT_DIST_TAR}"
   echo -n "-----> Downloading ${SHUNIT_DIST}....."
   curl --silent --location ${SHUNIT_URL} > ${CACHE_DIR}/${SHUNIT_DIST_TAR}
   echo " done"
