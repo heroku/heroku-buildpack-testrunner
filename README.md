@@ -127,7 +127,7 @@ root directory of the project.
 Then, run the following to test a Buildpack:
 
 ```
-docker run -it -v /path/to/buildpack:/app/buildpack:ro heroku/testrunner 
+docker run -it -v /path/to/buildpack:/app/buildpack:ro heroku/buildpack-testrunner 
 ```
 
 On Mac OS X it is necessary to [customize boot2docker](https://medium.com/boot2docker-lightweight-linux-for-docker/boot2docker-together-with-virtualbox-guest-additions-da1e3ab2465c) 
