@@ -83,10 +83,10 @@ To use the testrunner locally, first clone this repository:
     git clone https://github.com/heroku/heroku-buildpack-testrunner
 
 If you do not already have shUnit2 installed, either
-[download](http://code.google.com/p/shunit2/downloads/list) it or check it
-out from SVN:
+[download](https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/shunit2/shunit2-2.1.6.tgz) it or check it
+out from Github:
 
-    svn checkout http://shunit2.googlecode.com/svn/trunk/ shunit2
+    git clone https://github.com/kward/shunit2
 
 Do not use `apt-get` for obtaining shUnit2 because it is the wrong version.
 
@@ -207,7 +207,7 @@ If you are downloading files in tests, it is highly recommended to use
 
 to make sure you actually downloaded the correct file. This assertion is more portable between platforms rather than computing the MD5 yourself.
 
-In addition, please see the [shUnit2 documentation](http://shunit2.googlecode.com/svn/trunk/source/2.1/doc/shunit2.txt) for information on additional asssertions available.
+In addition, please see the [shUnit2 documentation](https://code.google.com/archive/p/shunit2/) for information on additional asssertions available.
 
 Metatesting
 -----------
