@@ -17,7 +17,6 @@ if [ -z "$real_curl" ]; then
   exit 1
 fi
 
-
 # find the URL argument and set path vars
 for arg; do
   # don't cache head requests
