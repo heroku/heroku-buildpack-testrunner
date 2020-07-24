@@ -3,6 +3,7 @@
 #cache_dir=$(cat $(dirname ${0})/../conf/cache.conf | sed -r "s/cache_dir=(.*)$/\1/")
 cache_dir=$(sed '/^\#/d' $(dirname ${0})/../conf/cache.conf | grep 'cache_dir'  | tail -n 1 | cut -d "=" -f2-)
 
+# find the real curl cmd
 for c in $(which -a curl); do
   if [ "${c}" != "${0}" ]; then
     real_curl=${c}
