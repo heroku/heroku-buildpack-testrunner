@@ -3,13 +3,19 @@
 #cache_dir=$(cat $(dirname ${0})/../conf/cache.conf | sed -r "s/cache_dir=(.*)$/\1/")
 cache_dir=$(sed '/^\#/d' $(dirname ${0})/../conf/cache.conf | grep 'cache_dir'  | tail -n 1 | cut -d "=" -f2-)
 
-# find the real curl cmd
 for c in $(which -a curl); do
-  if [ ${c} != ${0} ]; then
+  if [ "${c}" != "${0}" ]; then
     real_curl=${c}
     break
   fi
 done
+
+if [ -z "$real_curl" ]; then
+  echo "curl is not on this system"
+  echo "curl is not on this system" >&2
+  exit 1
+fi
+
 
 # find the URL argument and set path vars
 for arg; do
