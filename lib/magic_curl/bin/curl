@@ -5,11 +5,16 @@ cache_dir=$(sed '/^\#/d' $(dirname ${0})/../conf/cache.conf | grep 'cache_dir'  
 
 # find the real curl cmd
 for c in $(which -a curl); do
-  if [ ${c} != ${0} ]; then
+  if [ "${c}" != "${0}" ]; then
     real_curl=${c}
     break
   fi
 done
+
+if [ -z "$real_curl" ]; then
+  echo "curl is not on this system" | tee /dev/stderr 
+  exit 1
+fi
 
 # find the URL argument and set path vars
 for arg; do
