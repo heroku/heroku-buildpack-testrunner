@@ -12,8 +12,7 @@ for c in $(which -a curl); do
 done
 
 if [ -z "$real_curl" ]; then
-  echo "curl is not on this system"
-  echo "curl is not on this system" >&2
+  echo "curl is not on this system" | tee /dev/stderr 
   exit 1
 fi
 
